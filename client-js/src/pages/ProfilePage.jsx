@@ -17,12 +17,12 @@ function ProfilePage() {
         }
 
         if (!user.user.firstName) {
-            navigate("/form");
+            navigate("/register/form");
         }
     }, [navigate, user.infomation, user.user.firstName]);
 
     const backToForm = () => {
-        navigate("/form");
+        navigate("/register/form");
     };
 
     return (

@@ -29,7 +29,7 @@ function Confirmed({ user, Console }) {
             window.location.href = `${config.voteDomain}/vote/${encryptedIdEncoded}`;
         } catch (error) {
             console.error("Error during encryption or redirection:", error);
-            navigate("/register/profile");
+            navigate("/profile");
         }
     };
 

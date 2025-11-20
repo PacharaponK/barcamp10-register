@@ -165,11 +165,11 @@ router.get(
                 if (currentUser) {
                     const redirectUrl =
                         currentUser.status === ""
-                            ? `${CLIENT_URL}/form`
+                            ? `${CLIENT_URL}/register/form`
                             : `${CLIENT_URL}/profile`;
                     return res.redirect(redirectUrl);
                 } else {
-                    return res.redirect(`${CLIENT_URL}/form`);
+                    return res.redirect(`${CLIENT_URL}/register/form`);
                 }
             } catch (error) {
                 console.error(error);

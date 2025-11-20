@@ -15,12 +15,17 @@ import { getUser, getSpecialUser } from "./api/user.js";
 import { getConsole } from "./api/console.js";
 
 import config from "./services/config.js";
+import RegisterHomePage from "./pages/RegisterHomePage.jsx";
 
 const router = createBrowserRouter(
     [
         {
             path: "/",
             element: <App />,
+        },
+        {
+            path: "/register",
+            element: <RegisterHomePage />,
             loader: async () => {
                 let user = await getUser();
                 let Console = await getConsole();
@@ -28,7 +33,7 @@ const router = createBrowserRouter(
             },
         },
         {
-            path: "/form",
+            path: "/register/form",
             element: <FormPage />,
             loader: async () => {
                 let user = await getUser();
@@ -82,7 +87,6 @@ const router = createBrowserRouter(
             },
         },
     ],
-    { basename: "/register" }
 );
 
 ReactDOM.createRoot(document.getElementById("root")).render(
