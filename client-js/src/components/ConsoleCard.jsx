@@ -23,7 +23,11 @@ function ConsoleCard({ Console }) {
     const fetch_user = async () => {
         try {
             let users = await adminGetAllUsers();
-            setUsersLst(users); // Ensure usersLst is always an array
+            if (Array.isArray(users)) {
+                setUsersLst(users);
+            } else {
+                setUsersLst([]);
+            }
         } catch (error) {
             console.error("Error fetching users:", error);
             setUsersLst([]);
@@ -197,7 +201,7 @@ function ConsoleCard({ Console }) {
                         </tr>
                     </thead>
                     <tbody>
-                        {usersLst.length > 0 ? (
+                        {Array.isArray(usersLst) && usersLst.length > 0 ? (
                             usersLst
                                 .filter((user) => user.status !== "")
                                 .map((user, index) => (

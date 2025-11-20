@@ -16,7 +16,10 @@ router.get("/login/success", (req, res) => {
 
         Participant.findOne({ email }).then(async (currentUser) => {
             let console_lst = await Console.findOne({ name: "control" });
-            let editable = new Date(console_lst.end_register).getTime() - new Date().getTime() > 0;
+            let editable =
+                new Date(console_lst.end_register).getTime() -
+                    new Date().getTime() >
+                0;
 
             if (currentUser) {
                 res.status(200).json({
@@ -99,7 +102,9 @@ router.get("/login/failed", (req, res) => {
 router.get("/logout", (req, res) => {
     req.logOut((err) => {
         if (err) {
-            return res.status(500).json({ error: true, message: "Logout failed" });
+            return res
+                .status(500)
+                .json({ error: true, message: "Logout failed" });
         }
 
         res.status(200).clearCookie("connect.sid", {
@@ -109,36 +114,86 @@ router.get("/logout", (req, res) => {
     });
 });
 
-// เส้นทางสำหรับ Google Login และ Callback สำหรับ user ทั่วไป
-router.get("/google", passport.authenticate("google-login", { scope: ["profile", "email"] }));
+// Seed endpoint - สร้างข้อมูล Console เริ่มต้น
+router.post("/seed", async (req, res) => {
+    try {
+        const existingConsole = await Console.findOne({ name: "control" });
 
-router.get("/google/callback", passport.authenticate("google-login", { failureRedirect: "/auth/login/failed" }), async (req, res) => {
-    if (req.user) {
-        let email = req.user.emails[0].value;
-
-        try {
-            const currentUser = await Participant.findOne({ email });
-            if (currentUser) {
-                const redirectUrl = currentUser.status === "" ? `${CLIENT_URL}/form` : `${CLIENT_URL}/profile`;
-                return res.redirect(redirectUrl);
-            } else {
-                return res.redirect(`${CLIENT_URL}/form`);
-            }
-        } catch (error) {
-            console.error(error);
-            return res.redirect(`${CLIENT_URL}`);
+        if (existingConsole) {
+            return res.status(200).json({
+                message: "Console data already exists",
+                data: existingConsole,
+            });
         }
-    } else {
-        return res.redirect(CLIENT_URL);
+
+        // สร้างข้อมูล Console ใหม่ (ตั้งเวลาสิ้นสุดการลงทะเบียน 30 วันนับจากวันนี้)
+        const newConsole = new Console({
+            name: "control",
+            start_register: new Date(),
+            end_register: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 วันจากนี้
+            vote: false,
+        });
+
+        await newConsole.save();
+        res.status(201).json({
+            message: "Console data initialized successfully",
+            data: newConsole,
+        });
+    } catch (error) {
+        console.error("Seed error:", error);
+        res.status(500).json({ error: true, message: error.message });
     }
 });
 
+// เส้นทางสำหรับ Google Login และ Callback สำหรับ user ทั่วไป
+router.get(
+    "/google",
+    passport.authenticate("google-login", { scope: ["profile", "email"] })
+);
+
+router.get(
+    "/google/callback",
+    passport.authenticate("google-login", {
+        failureRedirect: "/auth/login/failed",
+    }),
+    async (req, res) => {
+        if (req.user) {
+            let email = req.user.emails[0].value;
+
+            try {
+                const currentUser = await Participant.findOne({ email });
+                if (currentUser) {
+                    const redirectUrl =
+                        currentUser.status === ""
+                            ? `${CLIENT_URL}/register/form`
+                            : `${CLIENT_URL}/profile`;
+                    return res.redirect(redirectUrl);
+                } else {
+                    return res.redirect(`${CLIENT_URL}/register/form`);
+                }
+            } catch (error) {
+                console.error(error);
+                return res.redirect(`${CLIENT_URL}`);
+            }
+        } else {
+            return res.redirect(CLIENT_URL);
+        }
+    }
+);
+
 // เส้นทางสำหรับ Special Register และ Callback สำหรับ กรณีพิเศษ
-router.get("/google/special-register", passport.authenticate("google-special-register", { scope: ["profile", "email"] }));
+router.get(
+    "/google/special-register",
+    passport.authenticate("google-special-register", {
+        scope: ["profile", "email"],
+    })
+);
 
 router.get(
     "/google/special-register/callback",
-    passport.authenticate("google-special-register", { failureRedirect: "/auth/login/failed" }),
+    passport.authenticate("google-special-register", {
+        failureRedirect: "/auth/login/failed",
+    }),
     async (req, res) => {
         if (req.user) {
             let email = req.user.emails[0].value;
@@ -154,14 +209,20 @@ router.get(
                             : `${CLIENT_URL}/special-register/${SPECIAL_SECRET_URL}/${SPECIAL_SECRET_FORM_URL}`;
                     return res.redirect(redirectUrl);
                 } else {
-                    return res.redirect(`${CLIENT_URL}/special-register/${SPECIAL_SECRET_URL}/${SPECIAL_SECRET_FORM_URL}`);
+                    return res.redirect(
+                        `${CLIENT_URL}/special-register/${SPECIAL_SECRET_URL}/${SPECIAL_SECRET_FORM_URL}`
+                    );
                 }
             } catch (error) {
                 console.error(error);
-                return res.redirect(`${CLIENT_URL}/special-register/${SPECIAL_SECRET_URL}`);
+                return res.redirect(
+                    `${CLIENT_URL}/special-register/${SPECIAL_SECRET_URL}`
+                );
             }
         } else {
-            return res.redirect(`${CLIENT_URL}/special-register/${SPECIAL_SECRET_URL}`);
+            return res.redirect(
+                `${CLIENT_URL}/special-register/${SPECIAL_SECRET_URL}`
+            );
         }
     }
 );

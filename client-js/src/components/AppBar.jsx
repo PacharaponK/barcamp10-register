@@ -65,7 +65,7 @@ function AppBar() {
 						<p>โปรไฟล์</p>
 					</button>
 					<button
-						onClick={() => navigate("/form")}
+						onClick={() => navigate("/register/form")}
 						className="flex space-x-2 hover:bg-gray-100 p-2 w-full ease-in-out duration-[0.2s] rounded-lg"
 					>
 						<svg
