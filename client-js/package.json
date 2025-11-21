@@ -18,6 +18,7 @@
         "crypto-js": "^4.2.0",
         "formik": "^2.4.5",
         "framer-motion": "^10.16.4",
+        "lucide-react": "^0.554.0",
         "mouse-event": "^1.0.5",
         "prop-types": "^15.8.1",
         "qrcode": "^1.5.4",
