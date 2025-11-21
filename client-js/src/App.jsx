@@ -2,6 +2,7 @@
 
 import { Link } from "react-router-dom";
 import { motion, useScroll, useSpring, useTransform } from "framer-motion";
+import { Typewriter } from "motion-plus/react"
 import { 
   Cloud, Moon, Star, Anchor, Ship, Fish, Wind, Sparkles, 
   Droplets, Compass, Map, Shell, Circle, Home, Info, Calendar, Image as ImageIcon 
@@ -224,7 +225,7 @@ function App() {
               Barcamp 10
             </h1>
             <p className="text-xl md:text-3xl mb-10 text-cyan-100 font-light tracking-[0.2em] uppercase drop-shadow-md flex items-center justify-center gap-3">
-              <Wind size={20} className="md:w-6 md:h-6" /> Songkhla Night Sea <Wind size={20} className="md:w-6 md:h-6 scale-x-[-1]" />
+              <Typewriter backspace="slow">Songkhla Night Sea</Typewriter>
             </p>
 
             <Link to="/register">
