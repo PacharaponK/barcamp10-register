@@ -5,7 +5,8 @@ import { motion, useScroll, useSpring, useTransform } from "framer-motion";
 import { Typewriter } from "motion-plus/react"
 import { 
   Cloud, Moon, Star, Anchor, Ship, Fish, Wind, Sparkles, 
-  Droplets, Compass, Map, Shell, Circle, Home, Info, Calendar, Image as ImageIcon 
+  Droplets, Compass, Map, Shell, Circle, Home, Info, Calendar, Image as ImageIcon,
+  Coffee, MessageCircle, Zap, MapPin, Facebook, Instagram, Clock
 } from "lucide-react";
 import { useEffect, useState } from "react";
 
@@ -103,6 +104,18 @@ function App() {
     { id: "gallery", label: "GALLERY", icon: ImageIcon },
   ];
 
+  // TODO: Replace with real sponsor data
+  const sponsors = [
+    { id: 1, name: "Sponsor 1", logo: "https://placehold.co/400x400/0f172a/22d3ee?text=Sponsor+1" },
+    { id: 2, name: "Sponsor 2", logo: "https://placehold.co/400x400/0f172a/22d3ee?text=Sponsor+2" },
+    { id: 3, name: "Sponsor 3", logo: "https://placehold.co/400x400/0f172a/22d3ee?text=Sponsor+3" },
+    { id: 4, name: "Sponsor 4", logo: "https://placehold.co/400x400/0f172a/22d3ee?text=Sponsor+4" },
+    { id: 5, name: "Sponsor 5", logo: "https://placehold.co/400x400/0f172a/22d3ee?text=Sponsor+5" },
+    { id: 6, name: "Sponsor 6", logo: "https://placehold.co/400x400/0f172a/22d3ee?text=Sponsor+6" },
+    { id: 7, name: "Sponsor 7", logo: "https://placehold.co/400x400/0f172a/22d3ee?text=Sponsor+7" },
+    { id: 8, name: "Sponsor 8", logo: "https://placehold.co/400x400/0f172a/22d3ee?text=Sponsor+8" },
+  ];
+
   return (
     <div className="bg-gradient-to-b from-[#020617] via-[#172554] to-[#0891b2] min-h-screen font-sans text-white overflow-x-hidden">
       {/* Progress Bar */}
@@ -163,7 +176,7 @@ function App() {
         {/* HOME SECTION: Moon & Clouds & Stars */}
         <section
           id="home"
-          className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20"
+          className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden pt-20"
         >
           {/* Giant Moon */}
           <motion.div
@@ -221,10 +234,10 @@ function App() {
             transition={{ duration: 1, delay: 0.5 }}
             className="text-center z-10 relative px-4"
           >
-            <h1 className="text-5xl md:text-9xl font-bold mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white to-cyan-200 drop-shadow-[0_5px_5px_rgba(0,0,0,0.5)] flex flex-col md:flex-row items-center justify-center gap-2 md:gap-4">
-              Barcamp 10
+            <h1 className="text-5xl md:text-9xl font-bold mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white to-cyan-200 drop-shadow-[0_2px_6px_rgba(0,0,0,0.4)] md:drop-shadow-[0_5px_5px_rgba(0,0,0,0.5)] flex flex-col md:flex-row items-center justify-center gap-2 md:gap-4">
+              BARCAMP 10
             </h1>
-            <p className="text-xl md:text-3xl mb-10 text-cyan-100 font-light tracking-[0.2em] uppercase drop-shadow-md flex items-center justify-center gap-3">
+            <p className="text-xl md:text-3xl mb-10 text-cyan-100 font-light tracking-[0.2em] uppercase drop-shadow-[0_2px_3px_rgba(0,0,0,0.6)] md:drop-shadow-md flex items-center justify-center gap-3">
               <Typewriter backspace="slow">Songkhla Night Sea</Typewriter>
             </p>
 
@@ -238,11 +251,171 @@ function App() {
                 Register Now
               </motion.button>
             </Link>
+
+            {/* Mobile: Date & Location (In Flow) */}
+            <motion.div 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 1, duration: 1 }}
+                className="md:hidden mt-12 flex flex-col items-center gap-8 px-4"
+            >
+                 <div className="flex flex-col items-center gap-2 text-center">
+                    <div className="p-3 bg-white/5 rounded-full border border-white/10">
+                        <Calendar className="text-cyan-300" size={24} />
+                    </div>
+                    <div>
+                      <span className="text-cyan-100/60 text-[10px] font-bold tracking-widest uppercase block mb-1">Date</span>
+                      <span className="text-white font-medium text-base">Saturday, 7 Feb 2026</span>
+                    </div>
+                </div>
+                <div className="flex flex-col items-center gap-2 text-center">
+                    <div className="p-3 bg-white/5 rounded-full border border-white/10">
+                        <MapPin className="text-cyan-300" size={24} />
+                    </div>
+                    <div>
+                      <span className="text-cyan-100/60 text-[10px] font-bold tracking-widest uppercase block mb-1">Location</span>
+                      <span className="text-white font-medium text-base leading-relaxed">
+                        Learning resources center building (LRC) ชั้น 8,<br/>Prince of Songkla University
+                      </span>
+                    </div>
+                </div>
+            </motion.div>
+          </motion.div>
+
+          {/* Mobile: Follow Us (Top Right) */}
+          <div className="md:hidden absolute top-5 right-4 z-20 flex gap-3">
+                <a href="https://facebook.com/BarcampSongkhla" target="_blank" rel="noopener noreferrer" className="p-2 bg-white/10 backdrop-blur-md rounded-full border border-white/20 text-white hover:bg-blue-600/30 transition-all">
+                    <Facebook size={18} />
+                </a>
+                <a href="https://www.instagram.com/barcampsk/" target="_blank" rel="noopener noreferrer" className="p-2 bg-white/10 backdrop-blur-md rounded-full border border-white/20 text-white hover:bg-pink-600/30 transition-all">
+                    <Instagram size={18} />
+                </a>
+          </div>
+
+          {/* Desktop: Bottom Bar (Absolute) */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1.2, duration: 0.8 }}
+            className="hidden md:flex  pt-8 z-20 justify-between items-start px-8 max-w-5xl mx-auto w-full"
+          >
+                {/* Date */}
+                <div className="flex items-center gap-3 group cursor-default">
+                    <div className="p-3 bg-white/5 rounded-full border border-white/10 group-hover:border-cyan-400/50 group-hover:bg-cyan-500/10 transition-all duration-300">
+                        <Calendar className="text-cyan-300 group-hover:text-cyan-200" size={20} />
+                    </div>
+                    <div className="text-left">
+                      <span className="text-cyan-100/60 text-[10px] font-bold tracking-[0.2em] uppercase block mb-1">Date & Time</span>
+                      <span className="text-white font-medium text-base tracking-wide">Saturday, 7 Feb 2026</span>
+                    </div>
+                </div>
+
+                {/* Location */}
+                <div className="flex items-center gap-3 group cursor-default">
+                    <div className="p-3 bg-white/5 rounded-full border border-white/10 group-hover:border-cyan-400/50 group-hover:bg-cyan-500/10 transition-all duration-300">
+                        <MapPin className="text-cyan-300 group-hover:text-cyan-200" size={20} />
+                    </div>
+                    <div className="text-left">
+                      <span className="text-cyan-100/60 text-[10px] font-bold tracking-[0.2em] uppercase block mb-1">Location</span>
+                      <span className="text-white font-medium text-base tracking-wide">
+                        Learning resources center building (LRC) ชั้น 8,<br/>Prince of Songkla University
+                      </span>
+                    </div>
+                </div>
+
+                {/* Follow Us */}
+                <div className="flex flex-col items-center gap-2">
+                    <span className="text-cyan-100/60 text-[10px] font-bold tracking-[0.2em] uppercase">Follow Us</span>
+                    <div className="flex gap-2">
+                        <a href="https://facebook.com/BarcampSongkhla" target="_blank" rel="noopener noreferrer" className="p-2 bg-white/5 rounded-full border border-white/10 hover:border-blue-500/50 hover:bg-blue-600/20 hover:text-blue-400 transition-all duration-300">
+                            <Facebook size={18} />
+                        </a>
+                        <a href="https://www.instagram.com/barcampsk/" target="_blank" rel="noopener noreferrer" className="p-2 bg-white/5 rounded-full border border-white/10 hover:border-pink-500/50 hover:bg-pink-600/20 hover:text-pink-400 transition-all duration-300">
+                            <Instagram size={18} />
+                        </a>
+                    </div>
+                </div>
           </motion.div>
         </section>
 
+        {/* SPONSOR SECTION */}
+        <section id="sponsors" className="relative py-24 bg-gradient-to-b from-transparent to-[#172554] overflow-hidden">
+           {/* Stars */}
+           {[...Array(20)].map((_, i) => (
+            <motion.div
+              key={`sponsor-star-${i}`}
+              className="absolute text-yellow-100/60"
+              style={{
+                top: `${Math.random() * 100}%`,
+                left: `${Math.random() * 100}%`,
+              }}
+              animate={{ opacity: [0.2, 0.8, 0.2], scale: [0.8, 1.2, 0.8] }}
+              transition={{ duration: Math.random() * 3 + 2, repeat: Infinity }}
+            >
+                <Star size={Math.random() * 4 + 2} fill="currentColor" strokeWidth={0} />
+            </motion.div>
+           ))}
+
+           {/* Floating Particles */}
+           {[...Array(15)].map((_, i) => (
+            <motion.div
+              key={`sponsor-particle-${i}`}
+              className="absolute bg-cyan-400/20 rounded-full blur-sm"
+              style={{
+                top: `${Math.random() * 100}%`,
+                left: `${Math.random() * 100}%`,
+                width: `${Math.random() * 10 + 2}px`,
+                height: `${Math.random() * 10 + 2}px`,
+              }}
+              animate={{ 
+                y: [0, -30, 0], 
+                opacity: [0.2, 0.6, 0.2] 
+              }}
+              transition={{ 
+                duration: Math.random() * 5 + 3, 
+                repeat: Infinity,
+                ease: "easeInOut" 
+              }}
+            />
+           ))}
+
+           <div className="container mx-auto px-4 relative z-10">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                className="text-center mb-16"
+              >
+                <h2 className="text-3xl md:text-5xl font-bold text-cyan-300 drop-shadow-[0_0_10px_rgba(34,211,238,0.5)] tracking-wider mb-4">
+                  OUR SPONSORS
+                </h2>
+                <div className="h-1 w-24 bg-gradient-to-r from-transparent via-cyan-500 to-transparent mx-auto rounded-full"></div>
+              </motion.div>
+
+              {/* Sponsors Grid */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-10 max-w-5xl mx-auto">
+                {sponsors.map((sponsor, index) => (
+                  <motion.div
+                    key={sponsor.id}
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: index * 0.1 }}
+                    className="aspect-square bg-white/5 backdrop-blur-md border border-cyan-500/20 rounded-[2rem] flex items-center justify-center p-8 shadow-lg"
+                  >
+                    <img 
+                        src={sponsor.logo} 
+                        alt={sponsor.name} 
+                        className="w-full h-full object-contain opacity-80 hover:opacity-100 transition-opacity duration-300 rounded-xl"
+                    />
+                  </motion.div>
+                ))}
+              </div>
+           </div>
+        </section>
+
         {/* ABOUT SECTION */}
-        <section id="about" className="relative min-h-[600px] md:min-h-[700px] flex flex-col items-center pt-24 md:pt-32 overflow-hidden bg-gradient-to-b from-[#172554] to-[#0e7490]">
+        <section id="about" className="relative min-h-[800px] flex flex-col items-center py-24 pb-32 overflow-hidden bg-gradient-to-b from-[#172554] to-[#0e7490]">
           {/* Stars */}
           {[...Array(30)].map((_, i) => (
             <motion.div
@@ -259,17 +432,117 @@ function App() {
             </motion.div>
           ))}
 
-          <div className="z-10 text-center max-w-4xl px-4 relative">
-            <h1 className="text-4xl md:text-6xl font-bold mb-8 text-cyan-200 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] flex items-center justify-center gap-3">
-              <Compass size={36} className="md:w-12 md:h-12" /> ABOUT
-            </h1>
-            <div className="bg-[#020617]/40 backdrop-blur-md p-6 md:p-8 rounded-2xl border border-cyan-500/30 shadow-2xl mx-4">
-                <p className="text-lg md:text-xl text-cyan-50 leading-relaxed font-light">
-                Barcamp Songkhla ครั้งที่ 10 กลับมาพร้อมกับบรรยากาศสุดพิเศษในธีม <br className="hidden md:block"/>
-                <span className="font-bold text-cyan-300 text-2xl">"ทะเลสงขลาตอนกลางคืน"</span> <br className="hidden md:block"/>
-                พบกับการแบ่งปันความรู้ เทคโนโลยี และประสบการณ์ท่ามกลางแสงดาวและเสียงคลื่น
-                </p>
+          <div className="z-10 text-center max-w-6xl px-4 relative flex flex-col items-center">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8 }}
+            >
+              <h2 className="text-2xl md:text-3xl font-bold text-cyan-300 tracking-widest mb-2">WHAT IS</h2>
+              <h1 className="text-4xl md:text-6xl font-extrabold mb-8 text-white drop-shadow-[0_0_15px_rgba(34,211,238,0.5)]">
+                BARCAMP SONGKHLA?
+              </h1>
+            </motion.div>
+
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="bg-[#020617]/40 backdrop-blur-md rounded-2xl border border-cyan-500/30 shadow-2xl max-w-6xl w-full mb-10 overflow-hidden"
+            >
+                {/* Part 1: Intro */}
+                <div className="px-8 py-6 text-center">
+                    <h3 className="text-cyan-400 text-sm font-bold tracking-[0.3em] uppercase mb-2">
+                      10th Anniversary
+                    </h3>
+                    <h2 className="text-2xl md:text-3xl font-bold text-white mb-4 tracking-tight">
+                      BARCAMP SONGKHLA
+                    </h2>
+                    <p className="text-lg text-cyan-100/80 font-light">
+                      กลับมาอีกครั้งในปีที่ 10 พร้อมกับยิ่งใหญ่และน่าตื่นตาตื่นใจกว่าทุกครั้งที่ผ่านมา กับบรรยากาศสุดพิเศษในธีม <span className="text-cyan-300 font-medium">&quot;ทะเลสงขลาตอนกลางคืน&quot;</span> พบกับการแบ่งปันความรู้ เทคโนโลยี และประสบการณ์ท่ามกลางแสงดาวและเสียงคลื่น
+                    </p>
+                </div>
+
+                {/* Part 2: Reward */}
+                <div className="border-y border-cyan-500/20 py-6 px-8">
+                    <div className="flex flex-col items-center justify-center gap-3 md:gap-4">
+                        <div className="flex items-center gap-2">
+                            <div className="bg-yellow-500/10 p-2 rounded-full">
+                                <Sparkles className="text-yellow-400" size={20} />
+                            </div>
+                            <span className="text-yellow-200 font-bold text-lg">Special for Speaker</span>
+                        </div>
+                        <p className="text-cyan-100/80 font-light text-lg" >
+                          ฉลองทศวรรษแห่งคอมมูนิตี้ด้วยรางวัลสุดพิเศษสำหรับ Speaker ในปีนี้ นั่นคือ <span className="text-white font-medium pb-0.5">สติ๊กเกอร์รวมโลโก้จากทุกปีที่ผ่านมา</span> ตั้งแต่ปีแรกจนถึงปัจจุบัน!
+                        </p>
+                    </div>
+                </div>
+
+                {/* Part 3: Slogan */}
+                <div className="px-8 py-6 text-center bg-black/20">
+                    <p className="text-base md:text-lg text-cyan-200/90 font-medium tracking-wide">
+                      &quot;Barcamp Songkhla 10 : ทศวรรษแห่งการแบ่งปันที่ไม่ควรพลาด&quot;
+                    </p>
+                </div>
+            </motion.div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full mb-12">
+                {[
+                  {
+                    icon: Coffee,
+                    title: "Unconference",
+                    subtitle: "งานสัมมนานอกกรอบ",
+                    desc: "บรรยากาศที่ไม่เป็นทางการและผ่อนคลาย"
+                  },
+                  {
+                    icon: MessageCircle,
+                    title: "Community",
+                    subtitle: "เสวนาแลกเปลี่ยนทัศนคติ",
+                    desc: "แลกเปลี่ยนความคิดเห็น และแบ่งปันความรู้"
+                  },
+                  {
+                    icon: Zap,
+                    title: "Technology",
+                    subtitle: "ชื่นชอบในเทคโนโลยี",
+                    desc: "สร้างเครือข่ายของคนรักเทคโนโลยี"
+                  }
+                ].map((item, index) => (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0, transition: { duration: 0.5, delay: 0.4 + (index * 0.2) }  }}
+                    viewport={{ once: true }}
+                    whileHover={{ scale: 1.05, y: -5, transition: { duration: 0.2, delay: 0 } }}
+                    className="relative overflow-hidden bg-gradient-to-br from-[#1e293b]/80 to-[#0f172a]/60 backdrop-blur-md p-8 rounded-2xl border border-cyan-500/30 shadow-xl group"
+                  >
+                    <div className="absolute inset-0 bg-gradient-to-t from-cyan-900/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
+                    <div className="relative z-10 flex flex-col items-center">
+                      <div className="bg-cyan-500/10 w-16 h-16 rounded-full flex items-center justify-center mb-6 transition-colors group-hover:scale-110 duration-300">
+                        <item.icon size={32} className="text-cyan-300 transition-colors" />
+                      </div>
+                      <h3 className="text-2xl font-bold text-white mb-1 group-hover:scale-105 transition-transform duration-200">{item.title}</h3>
+                      <h4 className="text-lg font-semibold text-cyan-400 mb-4">{item.subtitle}</h4>
+                      <p className="text-cyan-100/80 font-light leading-relaxed">
+                        {item.desc}
+                      </p>
+                    </div>
+                  </motion.div>
+                ))}
             </div>
+
+            <motion.div 
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, delay: 0.5 }}
+              className="max-w-3xl text-center"
+            >
+                <p className="text-lg md:text-xl text-cyan-100/90 leading-relaxed font-light italic">
+                &quot;เพราะเราเชื่อว่าถ้าเรามีพื้นที่ให้แลกเปลี่ยนความคิดกัน จะทำให้ทุกคนสามารถแชร์ความรู้ได้อย่างเต็มที่ และทำให้เกิดไอเดียใหม่ๆ ที่น่าสนใจได้&quot;
+                </p>
+            </motion.div>
           </div>
 
           {/* Mountains & Beach Graphic */}
@@ -395,7 +668,7 @@ function App() {
             transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
             className="absolute bottom-10 left-[-20px] md:left-[-50px] opacity-40 z-0"
           >
-             <svg width="200" height="200" md:width="300" md:height="300" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="0.5" className="text-teal-700 fill-teal-900/50">
+             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="0.5" className="w-[200px] h-[200px] md:w-[300px] md:h-[300px] text-teal-700 fill-teal-900/50">
                 <path d="M12 2C8 2 6 5 6 9c0 4 2 7 6 7s6-3 6-7c0-4-2-7-6-7z" />
                 <path d="M7 16c-1 2-2 4-2 7" />
                 <path d="M9 16c0 2-1 5-1 8" />
@@ -414,7 +687,7 @@ function App() {
           >
              <div className="relative">
                 <div className="absolute -top-10 left-0 w-full h-full bg-yellow-400/20 blur-xl rounded-full animate-pulse"></div>
-                <svg width="80" height="80" md:width="120" md:height="100" viewBox="0 0 24 24" fill="#ca8a04" stroke="#713f12" strokeWidth="1.5" strokeLinejoin="round">
+                <svg viewBox="0 0 24 24" fill="#ca8a04" stroke="#713f12" strokeWidth="1.5" strokeLinejoin="round" className="w-[80px] h-[80px] md:w-[120px] md:h-[100px]">
                     <path d="M3 6h18l-2 13H5L3 6z" />
                     <path d="M3 6l9-4 9 4" />
                     <path d="M12 12v3" />
