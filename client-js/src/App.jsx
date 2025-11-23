@@ -1,14 +1,78 @@
 // TODO: For Information Team Do Your Work Here
 
 import { Link } from "react-router-dom";
-import { motion, useScroll, useSpring, useTransform } from "framer-motion";
+import { 
+  motion, 
+  useScroll, 
+  useSpring, 
+  useTransform, 
+  useMotionValue, 
+  useVelocity, 
+  useAnimationFrame 
+} from "framer-motion";
 import { Typewriter } from "motion-plus/react"
 import { 
-  Cloud, Moon, Star, Anchor, Ship, Fish, Wind, Sparkles, 
-  Droplets, Compass, Map, Shell, Circle, Home, Info, Calendar, Image as ImageIcon,
-  Coffee, MessageCircle, Zap, MapPin, Facebook, Instagram, Clock
+  Cloud, Moon, Star, Anchor, Ship, Fish, Sparkles, 
+  Calendar, Image as ImageIcon, Home, Info, Map, MapPin, 
+  Facebook, Instagram, MessageCircle, Zap, Coffee
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
+
+// Utility for wrapping numbers
+const wrap = (min, max, v) => {
+  const rangeSize = max - min;
+  return ((((v - min) % rangeSize) + rangeSize) % rangeSize) + min;
+};
+
+function ParallaxScroll({ children, baseVelocity = 100 }) {
+  const baseX = useMotionValue(0);
+  const { scrollY } = useScroll();
+  const scrollVelocity = useVelocity(scrollY);
+  const smoothVelocity = useSpring(scrollVelocity, {
+    damping: 50,
+    stiffness: 400
+  });
+  const velocityFactor = useTransform(smoothVelocity, [0, 1000], [0, 5], {
+    clamp: false
+  });
+
+  /**
+   * This is a magic wrapping for the length of the text - you
+   * have to replace for wrapping that works for you or dynamically
+   * calculate
+   */
+  const x = useTransform(baseX, (v) => `${wrap(-20, -45, v)}%`);
+
+  const directionFactor = useRef(1);
+  useAnimationFrame((t, delta) => {
+    let moveBy = directionFactor.current * baseVelocity * (delta / 1000);
+
+    /**
+     * This is what changes the direction of the scroll once we
+     * switch scrolling directions.
+     */
+    if (velocityFactor.get() < 0) {
+      directionFactor.current = -1;
+    } else if (velocityFactor.get() > 0) {
+      directionFactor.current = 1;
+    }
+
+    moveBy += directionFactor.current * moveBy * velocityFactor.get();
+
+    baseX.set(baseX.get() + moveBy);
+  });
+
+  return (
+    <div className="parallax overflow-hidden flex flex-nowrap m-0 whitespace-nowrap w-full">
+      <motion.div className="scroller flex flex-nowrap whitespace-nowrap" style={{ x }}>
+        <span className="flex gap-4 mr-4">{children}</span>
+        <span className="flex gap-4 mr-4">{children}</span>
+        <span className="flex gap-4 mr-4">{children}</span>
+        <span className="flex gap-4 mr-4">{children}</span>
+      </motion.div>
+    </div>
+  );
+}
 
 function App() {
   const { scrollYProgress } = useScroll();
@@ -87,7 +151,7 @@ function App() {
       y: [0, -300],
       opacity: [0, 0.5, 0],
       scale: [0.5, 1.2],
-      x: [0, 15, -15, 0],
+      // Removed x-axis sway for simpler vertical rise
       transition: {
         duration: 8,
         repeat: Infinity,
@@ -116,6 +180,38 @@ function App() {
     { id: 8, name: "Sponsor 8", logo: "https://placehold.co/400x400/0f172a/22d3ee?text=Sponsor+8" },
   ];
 
+  const event = [
+    {
+      id: 1,
+      date: "In 2005",
+      title: "First time of Barcamp",
+      description: "บาร์แคมป์จัดขึ้นครั้งแรกเมื่อ พ.ศ. 2548 ที่เมืองพาโลอัลโต สหรัฐอเมริกา ได้ รับความนิยมจนมีการจัดบาร์แคมป์กระจายไปตามเมืองต่างๆ ทั่วโลกอย่าง รวดเร็ว",
+    },
+    {
+      id: 2,
+      date: "January 26th, 2008",
+      title: "Barcamp in Thailand",
+      description: "บาร์แคมป์ได้จัดขึ้นครั้งแรกเมื่อวันที่ 26 มกราคม พ.ศ. 2551 ที่กรุงเทพมหานคร จากนั้นได้มีผู้สนใจจัดงานตามจังหวัดต่างๆ ได้แก่ เชียงใหม่ สงขลา และ ภูเก็ต",
+    },
+    {
+      id: 3,
+      date: "Jun 28th, 2008",
+      title: "Barcamp in Songkhla",
+      description: "สำหรับจังหวัดสงขลานั้นบาร์แคมป์จัดขึ้นครั้ง แรกเมื่อวันที่ 28 มิถุนายน พ.ศ. 2551 ณ ภาควิชาวิศวกรรมคอมพิวเตอร์ มหาวิทยาลัยสงขลานครินทร์",
+    },
+    {
+      id: 4,
+      date: "Feb 7th, 2025",
+      title: "Coming soon",
+      description: "บาร์แคมป์ได้ดำเนินมาถึงครั้งที่ 9 ซึ่งจัดที่อาคารศูนย์ทรัพยากรการเรียนรู้ฯ ชั้น8 มหาวิทยาลัยสงขลานครินทร์",
+    }
+  ];
+
+  // Gallery Images (Placeholder)
+  const galleryImages1 = [1, 2, 3, 4, 5];
+  const galleryImages2 = [6, 7, 8, 9, 10];
+  const galleryImages3 = [11, 12, 13, 14, 15];
+
   return (
     <div className="bg-gradient-to-b from-[#020617] via-[#172554] to-[#0891b2] min-h-screen font-sans text-white overflow-x-hidden">
       {/* Progress Bar */}
@@ -132,10 +228,10 @@ function App() {
           transition={{ duration: 0.5 }}
           className="flex items-center justify-between px-4 md:px-8 h-full max-w-7xl mx-auto"
         >
-          <span className="text-2xl md:text-3xl text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.8)] font-bold flex items-center gap-2">
+          <a href="#home" className="text-2xl md:text-3xl text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.8)] font-bold flex items-center gap-2">
             <Anchor size={28} className="text-cyan-400" />
-            LOGO
-          </span>
+            <img src="barcamp10logo.png" alt="logo10" className="w-56 h-20" />
+          </a>
           
           {/* Desktop Menu */}
           <ul className="hidden md:flex space-x-8 text-white">
@@ -184,6 +280,7 @@ function App() {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 2 }}
             className="absolute top-20 right-10 md:top-10 md:right-32 z-0"
+            id="home"
           >
              <div className="relative w-48 h-48 md:w-96 md:h-96 bg-slate-100 rounded-full shadow-[0_0_60px_rgba(255,255,255,0.2)] md:shadow-[0_0_100px_rgba(255,255,255,0.3)] overflow-hidden">
                 <div className="absolute w-full h-full bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-20"></div>
@@ -235,7 +332,7 @@ function App() {
             className="text-center z-10 relative px-4"
           >
             <h1 className="text-5xl md:text-9xl font-bold mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white to-cyan-200 drop-shadow-[0_2px_6px_rgba(0,0,0,0.4)] md:drop-shadow-[0_5px_5px_rgba(0,0,0,0.5)] flex flex-col md:flex-row items-center justify-center gap-2 md:gap-4">
-              BARCAMP 10
+               BARCAMP 10
             </h1>
             <p className="text-xl md:text-3xl mb-10 text-cyan-100 font-light tracking-[0.2em] uppercase drop-shadow-[0_2px_3px_rgba(0,0,0,0.6)] md:drop-shadow-md flex items-center justify-center gap-3">
               <Typewriter backspace="slow">Songkhla Night Sea</Typewriter>
@@ -565,32 +662,40 @@ function App() {
           </h1>
           
           <div className="relative w-full max-w-4xl px-4 z-10">
-            <div className="border-l-4 border-cyan-500/50 ml-4 md:ml-6 space-y-12 md:space-y-16">
-              {[1, 2, 3].map((i) => (
+            {/* Enhanced Timeline Line */}
+            <div className="border-l-4 border-cyan-500/50 ml-4 md:ml-6 space-y-12 md:space-y-16 relative">
+              {/* Glow effect for the line */}
+              <div className="absolute top-0 bottom-0 left-[-2px] w-1 bg-cyan-400/30 blur-sm"></div>
+              
+              {event.map((i) => (
                 <motion.div 
-                    key={i} 
+                    key={i.id} 
                     initial={{ opacity: 0, x: -50 }}
                     whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.5, delay: i * 0.2 }}
-                    className="relative pl-8 md:pl-10"
+                    className="relative pl-8 md:pl-12"
                 >
-                  <div className="absolute -left-[14px] top-1 w-6 h-6 bg-cyan-400 rounded-full border-4 border-[#083344] shadow-[0_0_10px_rgba(34,211,238,0.8)]" />
-                  <div className="bg-[#164e63]/80 backdrop-blur-sm p-6 rounded-xl border border-cyan-500/20 shadow-lg hover:border-cyan-400/50 transition-colors">
-                    <h3 className="text-xl md:text-2xl font-bold text-white mb-2">Event Phase {i}</h3>
-                    <p className="text-cyan-100 text-sm md:text-base">รายละเอียดกิจกรรมช่วงที่ {i} ท่ามกลางเกลียวคลื่นแห่งการเรียนรู้</p>
+                  {/* Enhanced Node */}
+                  <div className="absolute -left-[14px] top-1 w-6 h-6 bg-cyan-400 rounded-full border-4 border-[#083344] shadow-[0_0_15px_rgba(34,211,238,1)] z-10" />
+                  <div className="absolute -left-[20px] top-[-5px] w-9 h-9 bg-cyan-400/20 rounded-full animate-pulse z-0" />
+
+                  <div className="bg backdrop-blur-sm p-6 rounded-xl border border-cyan-500/30 shadow-[0_0_15px_rgba(8,145,178,0.2)] hover:border-cyan-400/60 hover:shadow-[0_0_25px_rgba(34,211,238,0.3)] transition-all hover:scale-105 hover:translate-x-10 duration-300">
+                    <h3 className="text-xl md:text-2xl font-bold text-white mb-2">{i.date}</h3>
+                    <p className="text-cyan-100 text-sm md:text-base font-semibold mb-1">{i.title}</p>
+                    <p className="text-cyan-100/80 text-sm md:text-base font-light">{i.description}</p>
                   </div>
                 </motion.div>
               ))}
             </div>
           </div>
 
-          {/* Refined Animated Sea Waves */}
+          {/* Refined Animated Sea Waves - Simplified */}
           <div className="absolute bottom-0 w-full h-32 overflow-hidden z-0">
              {/* Wave Layer 1 */}
              <motion.div 
                 animate={{ x: ["0%", "-50%"] }} 
-                transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
                 className="absolute bottom-0 w-[200%] h-full flex opacity-40"
              >
                 <svg className="w-1/2 h-full text-[#155e75] fill-current" viewBox="0 0 1440 320" preserveAspectRatio="none">
@@ -604,7 +709,7 @@ function App() {
              {/* Wave Layer 2 */}
              <motion.div 
                 animate={{ x: ["-50%", "0%"] }} 
-                transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
+                transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
                 className="absolute bottom-0 w-[200%] h-full flex opacity-60"
             >
                  <svg className="w-1/2 h-full text-[#115e59] fill-current" viewBox="0 0 1440 320" preserveAspectRatio="none">
@@ -624,7 +729,7 @@ function App() {
             <Ship size={36} className="md:w-12 md:h-12" /> GALLERY
           </h1>
 
-          {/* Bubbles - Improved */}
+          {/* Bubbles - Simplified */}
           {[...Array(20)].map((_, i) => (
             <motion.div
               key={`bubble-${i}`}
@@ -708,18 +813,45 @@ function App() {
              <Fish size={20} md:size={30} fill="currentColor" />
           </motion.div>
 
-          {/* Gallery Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl px-4 z-10 w-full">
-            {[1, 2, 3, 4, 5, 6].map((i) => (
-              <motion.div
-                key={i}
-                whileHover={{ scale: 1.05, y: -5 }}
-                className="bg-teal-900/40 backdrop-blur-md border border-teal-500/30 rounded-xl h-64 w-full flex items-center justify-center shadow-lg group overflow-hidden relative"
-              >
-                <div className="absolute inset-0 bg-gradient-to-t from-teal-950/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                <span className="text-teal-200/70 text-4xl font-bold group-hover:scale-110 transition-transform duration-300">IMAGE {i}</span>
-              </motion.div>
-            ))}
+          {/* Parallax Gallery */}
+          <div className="z-10 w-full flex flex-col gap-8 py-10">
+            <ParallaxScroll baseVelocity={-2}>
+              {galleryImages1.map((i) => (
+                <div
+                  key={`row1-${i}`}
+                  className="hover:scale-90 bg-teal-900/40 backdrop-blur-md border border-teal-500/30 rounded-xl h-64 w-96 flex items-center justify-center shadow-lg group overflow-hidden relative shrink-0"
+                >
+                  <div className="absolute inset-0 bg-gradient-to-t from-teal-950/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <span className="text-teal-200/70 text-4xl font-bold group-hover:scale-110 transition-transform duration-300">IMAGE {i}</span>
+                </div>
+              ))}
+            </ParallaxScroll>
+
+            <ParallaxScroll baseVelocity={2}>
+              {galleryImages2.map((i) => (
+                <div
+                  key={`row2-${i}`}
+                  className="hover:scale-90  bg-teal-900/40 backdrop-blur-md border border-teal-500/30 rounded-xl h-64 w-96 flex items-center justify-center shadow-lg group overflow-hidden relative shrink-0"
+                >
+                  <div className="absolute inset-0 bg-gradient-to-t from-teal-950/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <span className="text-teal-200/70 text-4xl font-bold group-hover:scale-110 transition-transform duration-300">IMAGE {i}</span>
+                </div>
+              ))}
+            </ParallaxScroll>
+
+            <ParallaxScroll baseVelocity={-2}>
+              {galleryImages3.map((i) => (
+                <div
+                  key={`row3-${i}`}
+                  className="hover:scale-90 bg-teal-900/40 backdrop-blur-md border border-teal-500/30 rounded-xl h-64 w-96 flex items-center justify-center shadow-lg group overflow-hidden relative shrink-0"
+                >
+                  <div className="absolute inset-0 bg-gradient-to-t from-teal-950/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <span className="text-teal-200/70 text-4xl font-bold group-hover:scale-110 transition-transform duration-300">IMAGE {i}</span>
+                </div>
+              ))}
+            </ParallaxScroll>
+
+
           </div>
         </section>
       </main>
