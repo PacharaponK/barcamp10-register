@@ -356,8 +356,8 @@ function App() {
                 transition={{ delay: 1, duration: 1 }}
                 className="md:hidden mt-12 flex flex-col items-center gap-8 px-4"
             >
-                 <div className="flex flex-col items-center gap-2 text-center">
-                    <div className="p-3 bg-white/5 rounded-full border border-white/10">
+                 <div className="flex flex-col group items-center gap-2 text-center">
+                    <div className="p-3 bg-white/5 rounded-full border border-white/10 group-hover:border-cyan-400/50 group-hover:bg-cyan-500/10 transition-all duration-300">
                         <Calendar className="text-cyan-300" size={24} />
                     </div>
                     <div>
@@ -365,10 +365,10 @@ function App() {
                       <span className="text-white font-medium text-base">Saturday, 7 Feb 2026</span>
                     </div>
                 </div>
-                <div className="flex flex-col items-center gap-2 text-center">
-                    <div className="p-3 bg-white/5 rounded-full border border-white/10">
+                <div className="flex flex-col group items-center gap-2 text-center">
+                    <a href='https://maps.app.goo.gl/oS6xJSj86hAsZTpx5' className="p-3 bg-white/5 rounded-full border border-white/10 group-hover:border-cyan-400/50 group-hover:bg-cyan-500/10 transition-all duration-300">
                         <MapPin className="text-cyan-300" size={24} />
-                    </div>
+                    </a>
                     <div>
                       <span className="text-cyan-100/60 text-[10px] font-bold tracking-widest uppercase block mb-1">Location</span>
                       <span className="text-white font-medium text-base leading-relaxed">
@@ -398,20 +398,20 @@ function App() {
           >
                 {/* Date */}
                 <div className="flex items-center gap-3 group cursor-default">
-                    <div className="p-3 bg-white/5 rounded-full border border-white/10 group-hover:border-cyan-400/50 group-hover:bg-cyan-500/10 transition-all duration-300">
+                    <div className="p-3 bg-white/5 self-start rounded-full border border-white/10 group-hover:border-cyan-400/50 group-hover:bg-cyan-500/10 transition-all duration-300">
                         <Calendar className="text-cyan-300 group-hover:text-cyan-200" size={20} />
                     </div>
                     <div className="text-left">
-                      <span className="text-cyan-100/60 text-[10px] font-bold tracking-[0.2em] uppercase block mb-1">Date & Time</span>
+                      <span className="text-cyan-100/60 text-[10px] font-bold tracking-[0.2em] uppercase block mb-1">Date</span>
                       <span className="text-white font-medium text-base tracking-wide">Saturday, 7 Feb 2026</span>
                     </div>
                 </div>
 
                 {/* Location */}
                 <div className="flex items-center gap-3 group cursor-default">
-                    <div className="p-3 bg-white/5 rounded-full border border-white/10 group-hover:border-cyan-400/50 group-hover:bg-cyan-500/10 transition-all duration-300">
+                    <a href='https://maps.app.goo.gl/oS6xJSj86hAsZTpx5' className="p-3 self-start bg-white/5 rounded-full border border-white/10 group-hover:border-cyan-400/50 group-hover:bg-cyan-500/10 transition-all duration-300">
                         <MapPin className="text-cyan-300 group-hover:text-cyan-200" size={20} />
-                    </div>
+                    </a>
                     <div className="text-left">
                       <span className="text-cyan-100/60 text-[10px] font-bold tracking-[0.2em] uppercase block mb-1">Location</span>
                       <span className="text-white font-medium text-base tracking-wide">
@@ -489,8 +489,8 @@ function App() {
                 <div className="h-1 w-24 bg-gradient-to-r from-transparent via-cyan-500 to-transparent mx-auto rounded-full"></div>
               </motion.div>
 
-              {/* Sponsors Grid */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-10 max-w-5xl mx-auto">
+              {/* Desktop Sponsors Grid */}
+              <div className="hidden md:grid grid-cols-4 gap-10 max-w-5xl mx-auto">
                 {sponsors.map((sponsor, index) => (
                   <motion.div
                     key={sponsor.id}
@@ -507,6 +507,28 @@ function App() {
                     />
                   </motion.div>
                 ))}
+              </div>
+
+              {/* Mobile Sponsors Marquee */}
+              <div className="md:hidden overflow-hidden w-full">
+                <motion.div 
+                  className="flex gap-6 w-max"
+                  animate={{ x: "-50%" }}
+                  transition={{ duration: 20, ease: "linear", repeat: Infinity }}
+                >
+                  {[...sponsors, ...sponsors].map((sponsor, index) => (
+                    <div
+                      key={`mobile-sponsor-${index}`}
+                      className="w-40 h-40 bg-white/5 backdrop-blur-md border border-cyan-500/20 rounded-[2rem] flex items-center justify-center p-6 shadow-lg shrink-0"
+                    >
+                      <img 
+                          src={sponsor.logo} 
+                          alt={sponsor.name} 
+                          className="w-full h-full object-contain opacity-80 rounded-xl"
+                      />
+                    </div>
+                  ))}
+                </motion.div>
               </div>
            </div>
         </section>
@@ -550,36 +572,36 @@ function App() {
               className="bg-[#020617]/40 backdrop-blur-md rounded-2xl border border-cyan-500/30 shadow-2xl max-w-6xl w-full mb-10 overflow-hidden"
             >
                 {/* Part 1: Intro */}
-                <div className="px-8 py-6 text-center">
-                    <h3 className="text-cyan-400 text-sm font-bold tracking-[0.3em] uppercase mb-2">
+                <div className="px-4 md:px-8 py-6 text-center">
+                    <h3 className="text-cyan-400 text-xs md:text-sm font-bold tracking-[0.3em] uppercase mb-2">
                       10th Anniversary
                     </h3>
-                    <h2 className="text-2xl md:text-3xl font-bold text-white mb-4 tracking-tight">
+                    <h2 className="text-xl md:text-3xl font-bold text-white mb-4 tracking-tight">
                       BARCAMP SONGKHLA
                     </h2>
-                    <p className="text-lg text-cyan-100/80 font-light">
+                    <p className="text-base md:text-lg text-cyan-100/80 font-light leading-relaxed">
                       กลับมาอีกครั้งในปีที่ 10 พร้อมกับยิ่งใหญ่และน่าตื่นตาตื่นใจกว่าทุกครั้งที่ผ่านมา กับบรรยากาศสุดพิเศษในธีม <span className="text-cyan-300 font-medium">&quot;ทะเลสงขลายามค่ำคืน&quot;</span> พบกับการแบ่งปันความรู้ เทคโนโลยี และประสบการณ์ท่ามกลางแสงดาวและเสียงคลื่น
                     </p>
                 </div>
 
                 {/* Part 2: Reward */}
-                <div className="border-y border-cyan-500/20 py-6 px-8">
+                <div className="border-y border-cyan-500/20 py-6 px-4 md:px-8">
                     <div className="flex flex-col items-center justify-center gap-3 md:gap-4">
                         <div className="flex items-center gap-2">
                             <div className="bg-yellow-500/10 p-2 rounded-full">
                                 <Sparkles className="text-yellow-400" size={20} />
                             </div>
-                            <span className="text-yellow-200 font-bold text-lg">Special for Speaker</span>
+                            <span className="text-yellow-200 font-bold text-base md:text-lg">Special for Speaker</span>
                         </div>
-                        <p className="text-cyan-100/80 font-light text-lg" >
+                        <p className="text-cyan-100/80 font-light text-base md:text-lg leading-relaxed text-center" >
                           ฉลองทศวรรษแห่งคอมมูนิตี้ด้วยรางวัลสุดพิเศษสำหรับ Speaker ในปีนี้ นั่นคือ <span className="text-white font-medium pb-0.5">สติ๊กเกอร์รวมโลโก้จากทุกปีที่ผ่านมา</span> ตั้งแต่ปีแรกจนถึงปัจจุบัน!
                         </p>
                     </div>
                 </div>
 
                 {/* Part 3: Slogan */}
-                <div className="px-8 py-6 text-center bg-black/20">
-                    <p className="text-base md:text-lg text-cyan-200/90 font-medium tracking-wide">
+                <div className="px-4 md:px-8 py-6 text-center bg-black/20">
+                    <p className="text-sm md:text-lg text-cyan-200/90 font-medium tracking-wide">
                       &quot;Barcamp Songkhla 10 : ทศวรรษแห่งการแบ่งปันที่ไม่ควรพลาด&quot;
                     </p>
                 </div>
@@ -612,16 +634,16 @@ function App() {
                     whileInView={{ opacity: 1, y: 0, transition: { duration: 0.5, delay: 0.4 + (index * 0.2) }  }}
                     viewport={{ once: true }}
                     whileHover={{ scale: 1.05, y: -5, transition: { duration: 0.2, delay: 0 } }}
-                    className="relative overflow-hidden bg-gradient-to-br from-[#1e293b]/80 to-[#0f172a]/60 backdrop-blur-md p-8 rounded-2xl border border-cyan-500/30 shadow-xl group"
+                    className="relative overflow-hidden bg-gradient-to-br from-[#1e293b]/80 to-[#0f172a]/60 backdrop-blur-md p-6 md:p-8 rounded-2xl border border-cyan-500/30 shadow-xl group"
                   >
                     <div className="absolute inset-0 bg-gradient-to-t from-cyan-900/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
                     <div className="relative z-10 flex flex-col items-center">
-                      <div className="bg-cyan-500/10 w-16 h-16 rounded-full flex items-center justify-center mb-6 transition-colors group-hover:scale-110 duration-300">
-                        <item.icon size={32} className="text-cyan-300 transition-colors" />
+                      <div className="bg-cyan-500/10 w-14 h-14 md:w-16 md:h-16 rounded-full flex items-center justify-center mb-4 md:mb-6 transition-colors group-hover:scale-110 duration-300">
+                        <item.icon size={28} className="text-cyan-300 transition-colors md:w-8 md:h-8" />
                       </div>
-                      <h3 className="text-2xl font-bold text-white mb-1 group-hover:scale-105 transition-transform duration-200">{item.title}</h3>
-                      <h4 className="text-lg font-semibold text-cyan-400 mb-4">{item.subtitle}</h4>
-                      <p className="text-cyan-100/80 font-light leading-relaxed">
+                      <h3 className="text-xl md:text-2xl font-bold text-white mb-1 group-hover:scale-105 transition-transform duration-200">{item.title}</h3>
+                      <h4 className="text-base md:text-lg font-semibold text-cyan-400 mb-3 md:mb-4">{item.subtitle}</h4>
+                      <p className="text-sm md:text-base text-cyan-100/80 font-light leading-relaxed">
                         {item.desc}
                       </p>
                     </div>
@@ -634,9 +656,9 @@ function App() {
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 0.8, delay: 0.5 }}
-              className="max-w-3xl text-center"
+              className="max-w-3xl text-center px-4"
             >
-                <p className="text-lg md:text-xl text-cyan-100/90 leading-relaxed font-light italic">
+                <p className="text-base md:text-xl text-cyan-100/90 leading-relaxed font-light italic">
                 &quot;เพราะเราเชื่อว่าถ้าเรามีพื้นที่ให้แลกเปลี่ยนความคิดกัน จะทำให้ทุกคนสามารถแชร์ความรู้ได้อย่างเต็มที่ และทำให้เกิดไอเดียใหม่ๆ ที่น่าสนใจได้&quot;
                 </p>
             </motion.div>
