@@ -436,7 +436,7 @@ function App() {
         </section>
 
         {/* SPONSOR SECTION */}
-        <section id="sponsors" className="relative py-24 bg-gradient-to-b from-transparent to-[#172554] overflow-hidden">
+        <section id="sponsors" className="relative pt-24 pb-10 md:pb-24 bg-gradient-to-b from-transparent to-[#172554] overflow-hidden">
            {/* Stars */}
            {[...Array(20)].map((_, i) => (
             <motion.div
@@ -453,7 +453,6 @@ function App() {
             </motion.div>
            ))}
 
-           {/* Floating Particles */}
            {[...Array(15)].map((_, i) => (
             <motion.div
               key={`sponsor-particle-${i}`}
@@ -508,8 +507,6 @@ function App() {
                   </motion.div>
                 ))}
               </div>
-
-              {/* Mobile Sponsors Marquee */}
               <div className="md:hidden overflow-hidden w-full">
                 <motion.div 
                   className="flex gap-6 w-max"
