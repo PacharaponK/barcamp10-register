@@ -8,13 +8,14 @@ import {
   useTransform, 
   useMotionValue, 
   useVelocity, 
-  useAnimationFrame 
+  useAnimationFrame,
+  AnimatePresence
 } from "framer-motion";
 import { Typewriter } from "motion-plus/react"
 import { 
   Cloud, Moon, Star, Anchor, Ship, Fish, Sparkles, 
   Calendar, Image as ImageIcon, Home, Info, Map, MapPin, 
-  Facebook, Instagram, MessageCircle, Zap, Coffee
+  Facebook, Instagram, MessageCircle, Zap, Coffee, Menu, X
 } from "lucide-react";
 import { useEffect, useState, useRef } from "react";
 
@@ -83,6 +84,7 @@ function App() {
   });
 
   const [activeSection, setActiveSection] = useState("home");
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   // Enable smooth scrolling and active section detection
   useEffect(() => {
@@ -203,7 +205,7 @@ function App() {
       id: 4,
       date: "Feb 7th, 2025",
       title: "Coming soon",
-      description: "บาร์แคมป์ได้ดำเนินมาถึงครั้งที่ 9 ซึ่งจัดที่อาคารศูนย์ทรัพยากรการเรียนรู้ฯ ชั้น8 มหาวิทยาลัยสงขลานครินทร์",
+      description: "บาร์แคมป์ได้ดำเนินมาถึงครั้งที่ 10 ซึ่งจัดที่อาคารศูนย์ทรัพยากรการเรียนรู้ฯ ชั้น8 มหาวิทยาลัยสงขลานครินทร์",
     }
   ];
 
@@ -229,7 +231,6 @@ function App() {
           className="flex items-center justify-between px-4 md:px-8 h-full max-w-7xl mx-auto"
         >
           <a href="#home" className="text-2xl md:text-3xl text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.8)] font-bold flex items-center gap-2">
-            <Anchor size={28} className="text-cyan-400" />
             <img src="barcamp10logo.png" alt="logo10" className="w-56 h-20" />
           </a>
           
@@ -261,12 +262,62 @@ function App() {
             })}
           </ul>
 
-          {/* Mobile Menu Button (Placeholder for responsiveness) */}
-          <div className="md:hidden text-white">
-            <Map size={24} />
+          {/* Mobile Menu Button */}
+          <div className="md:hidden text-white z-50 relative">
+            <button 
+              onClick={() => setIsMobileMenuOpen(true)}
+              className="p-2 focus:outline-none"
+            >
+              <Menu size={28} />
+            </button>
           </div>
         </motion.nav>
       </header>
+
+      {/* Mobile Menu Overlay - Moved outside header to avoid transform stacking context issues */}
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, x: "100%" }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: "100%" }}
+            transition={{ type: "spring", damping: 25, stiffness: 200 }}
+            className="fixed inset-0 bg-[#020617]/95 backdrop-blur-xl z-[60] flex flex-col items-center justify-center md:hidden"
+          >
+            {/* Close Button */}
+            <div className="absolute top-6 right-8">
+              <button 
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="p-2 text-white focus:outline-none hover:text-cyan-300 transition-colors"
+              >
+                <X size={28} />
+              </button>
+            </div>
+
+            <ul className="flex flex-col items-center gap-8 text-white">
+              {navItems.map((item) => (
+                <motion.li 
+                  key={item.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.1 }}
+                >
+                  <a
+                    href={`#${item.id}`}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className={`flex items-center gap-3 text-2xl font-medium ${
+                      activeSection === item.id ? "text-cyan-300" : "text-white/80"
+                    }`}
+                  >
+                    <item.icon size={24} />
+                    {item.label}
+                  </a>
+                </motion.li>
+              ))}
+            </ul>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <main className="flex flex-col relative pt-20">
         {/* HOME SECTION: Moon & Clouds & Stars */}
@@ -680,7 +731,7 @@ function App() {
                   <div className="absolute -left-[14px] top-1 w-6 h-6 bg-cyan-400 rounded-full border-4 border-[#083344] shadow-[0_0_15px_rgba(34,211,238,1)] z-10" />
                   <div className="absolute -left-[20px] top-[-5px] w-9 h-9 bg-cyan-400/20 rounded-full animate-pulse z-0" />
 
-                  <div className="bg backdrop-blur-sm p-6 rounded-xl border border-cyan-500/30 shadow-[0_0_15px_rgba(8,145,178,0.2)] hover:border-cyan-400/60 hover:shadow-[0_0_25px_rgba(34,211,238,0.3)] transition-all hover:scale-105 hover:translate-x-10 duration-300">
+                  <div className="bg backdrop-blur-sm p-6 rounded-xl border border-cyan-500/30 shadow-[0_0_15px_rgba(8,145,178,0.2)] hover:border-cyan-400/60 hover:shadow-[0_0_25px_rgba(34,211,238,0.3)] transition-all hover:scale-105  duration-300">
                     <h3 className="text-xl md:text-2xl font-bold text-white mb-2">{i.date}</h3>
                     <p className="text-cyan-100 text-sm md:text-base font-semibold mb-1">{i.title}</p>
                     <p className="text-cyan-100/80 text-sm md:text-base font-light">{i.description}</p>
@@ -819,10 +870,14 @@ function App() {
               {galleryImages1.map((i) => (
                 <div
                   key={`row1-${i}`}
-                  className="hover:scale-90 bg-teal-900/40 backdrop-blur-md border border-teal-500/30 rounded-xl h-64 w-96 flex items-center justify-center shadow-lg group overflow-hidden relative shrink-0"
+                  className="hover:scale-90 bg-teal-900/40 backdrop-blur-md border border-teal-500/30 rounded-xl h-48 w-72 md:h-64 md:w-96 flex items-center justify-center shadow-lg group overflow-hidden relative shrink-0"
                 >
+                  <img 
+                    src={`/gallery9/${i}.jpg`} 
+                    alt={`Gallery Image ${i}`} 
+                    className="w-full h-full object-cover rounded-xl opacity-80 group-hover:opacity-100 transition-opacity duration-300"
+                  />
                   <div className="absolute inset-0 bg-gradient-to-t from-teal-950/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                  <span className="text-teal-200/70 text-4xl font-bold group-hover:scale-110 transition-transform duration-300">IMAGE {i}</span>
                 </div>
               ))}
             </ParallaxScroll>
@@ -831,10 +886,14 @@ function App() {
               {galleryImages2.map((i) => (
                 <div
                   key={`row2-${i}`}
-                  className="hover:scale-90  bg-teal-900/40 backdrop-blur-md border border-teal-500/30 rounded-xl h-64 w-96 flex items-center justify-center shadow-lg group overflow-hidden relative shrink-0"
+                  className="hover:scale-90  bg-teal-900/40 backdrop-blur-md border border-teal-500/30 rounded-xl h-48 w-72 md:h-64 md:w-96 flex items-center justify-center shadow-lg group overflow-hidden relative shrink-0"
                 >
+                  <img 
+                    src={`/gallery9/${i}.jpg`} 
+                    alt={`Gallery Image ${i}`} 
+                    className="w-full h-full object-cover rounded-xl opacity-80 group-hover:opacity-100 transition-opacity duration-300"
+                  />
                   <div className="absolute inset-0 bg-gradient-to-t from-teal-950/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                  <span className="text-teal-200/70 text-4xl font-bold group-hover:scale-110 transition-transform duration-300">IMAGE {i}</span>
                 </div>
               ))}
             </ParallaxScroll>
@@ -843,10 +902,14 @@ function App() {
               {galleryImages3.map((i) => (
                 <div
                   key={`row3-${i}`}
-                  className="hover:scale-90 bg-teal-900/40 backdrop-blur-md border border-teal-500/30 rounded-xl h-64 w-96 flex items-center justify-center shadow-lg group overflow-hidden relative shrink-0"
+                  className="hover:scale-90 bg-teal-900/40 backdrop-blur-md border border-teal-500/30 rounded-xl h-48 w-72 md:h-64 md:w-96 flex items-center justify-center shadow-lg group overflow-hidden relative shrink-0"
                 >
+                  <img 
+                    src={`/gallery9/${i}.jpg`} 
+                    alt={`Gallery Image ${i}`} 
+                    className="w-full h-full object-cover rounded-xl opacity-80 group-hover:opacity-100 transition-opacity duration-300"
+                  />
                   <div className="absolute inset-0 bg-gradient-to-t from-teal-950/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                  <span className="text-teal-200/70 text-4xl font-bold group-hover:scale-110 transition-transform duration-300">IMAGE {i}</span>
                 </div>
               ))}
             </ParallaxScroll>
