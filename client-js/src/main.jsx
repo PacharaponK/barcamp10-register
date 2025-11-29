@@ -16,6 +16,7 @@ import { getConsole } from "./api/console.js";
 
 import config from "./services/config.js";
 import RegisterHomePage from "./pages/RegisterHomePage.jsx";
+import NotFoundPage from "./pages/NotFoundPage.jsx";
 
 const IS_REGISTRATION_OPEN = false; // TODO: Change to true when registration opens
 
@@ -96,6 +97,10 @@ const router = createBrowserRouter(
                 let user = await getSpecialUser();
                 return { user };
             }),
+        },
+        {
+            path: "*",
+            element: <NotFoundPage />,
         },
     ],
 );
