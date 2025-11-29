@@ -1,4 +1,4 @@
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { createBrowserRouter, RouterProvider, redirect } from "react-router-dom";
 import ReactDOM from "react-dom/client";
 import React from "react";
 import App from "./App.jsx";
@@ -21,7 +21,7 @@ const IS_REGISTRATION_OPEN = false; // TODO: Change to true when registration op
 
 const registrationGuard = async (loaderFn) => {
     if (!IS_REGISTRATION_OPEN) {
-        return (window.location.href = "/");
+        return redirect("/");
     }
     return loaderFn();
 };
@@ -49,7 +49,7 @@ const router = createBrowserRouter(
                 let Console = await getConsole();
 
                 if (user.message === "No session.") {
-                    return (window.location.href = "/register");
+                    return redirect("/register");
                 }
 
                 return { user, Console };
@@ -63,7 +63,7 @@ const router = createBrowserRouter(
                 let Console = await getConsole();
 
                 if (user.message === "No session.") {
-                    return (window.location.href = "/register");
+                    return redirect("/register");
                 }
 
                 return { user, Console };
@@ -72,14 +72,15 @@ const router = createBrowserRouter(
         {
             path: "/admin",
             element: <AdminPage />,
+            loader: () => registrationGuard(async () => null),
         },
         {
             path: "/admin/control-panel",
             element: <AdminConsolePage />,
-            loader: async () => {
+            loader: () => registrationGuard(async () => {
                 let Console = await getConsole();
                 return { Console };
-            },
+            }),
         },
         {
             path: `/special-register/${config.SPECIAL_SECRET_URL}`,

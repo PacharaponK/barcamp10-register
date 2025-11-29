@@ -18,6 +18,7 @@ import {
   Facebook, Instagram, MessageCircle, Zap, Coffee, Menu, X
 } from "lucide-react";
 import { useEffect, useState, useRef } from "react";
+import useDynamicFavicon from "./hooks/useDynamicFavicon";
 
 // Utility for wrapping numbers
 const wrap = (min, max, v) => {
@@ -76,6 +77,7 @@ function ParallaxScroll({ children, baseVelocity = 100 }) {
 }
 
 function App() {
+  useDynamicFavicon();
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, {
     stiffness: 100,
