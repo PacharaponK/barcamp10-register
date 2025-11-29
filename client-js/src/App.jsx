@@ -487,8 +487,9 @@ function App() {
         </section>
 
         {/* SPONSOR SECTION */}
+
         <section id="sponsors" className="relative pt-24 pb-10 md:pb-24 bg-gradient-to-b from-transparent to-[#172554] overflow-hidden">
-           {/* Stars */}
+
            {[...Array(20)].map((_, i) => (
             <motion.div
               key={`sponsor-star-${i}`}
@@ -526,7 +527,7 @@ function App() {
             />
            ))}
 
-           <div className="container mx-auto px-4 relative z-10">
+           {/* <div className="container mx-auto px-4 relative z-10">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -539,7 +540,6 @@ function App() {
                 <div className="h-1 w-24 bg-gradient-to-r from-transparent via-cyan-500 to-transparent mx-auto rounded-full"></div>
               </motion.div>
 
-              {/* Desktop Sponsors Grid */}
               <div className="hidden md:grid grid-cols-4 gap-10 max-w-5xl mx-auto">
                 {sponsors.map((sponsor, index) => (
                   <motion.div
@@ -578,8 +578,9 @@ function App() {
                   ))}
                 </motion.div>
               </div>
-           </div>
+           </div> */}
         </section>
+
 
         {/* ABOUT SECTION */}
         <section id="about" className="relative min-h-[800px] flex flex-col items-center py-24 pb-32 overflow-hidden bg-gradient-to-b from-[#172554] to-[#0e7490]">
