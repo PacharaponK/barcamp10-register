@@ -389,7 +389,7 @@ function App() {
               <Typewriter backspace="slow">Songkhla Night Sea</Typewriter>
             </p>
 
-            <Link to="/register">
+            {/* <Link to="/register">
               <motion.button
                 whileHover={{ scale: 1.1, boxShadow: "0px 0px 30px rgba(34, 211, 238, 0.6)" }}
                 whileTap={{ scale: 0.95 }}
@@ -398,7 +398,7 @@ function App() {
                 <Sparkles size={20} />
                 Register Now
               </motion.button>
-            </Link>
+            </Link> */}
 
             {/* Mobile: Date & Location (In Flow) */}
             <motion.div 
