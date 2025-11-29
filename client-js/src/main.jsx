@@ -17,6 +17,15 @@ import { getConsole } from "./api/console.js";
 import config from "./services/config.js";
 import RegisterHomePage from "./pages/RegisterHomePage.jsx";
 
+const IS_REGISTRATION_OPEN = false; // TODO: Change to true when registration opens
+
+const registrationGuard = async (loaderFn) => {
+    if (!IS_REGISTRATION_OPEN) {
+        return (window.location.href = "/");
+    }
+    return loaderFn();
+};
+
 const router = createBrowserRouter(
     [
         {
@@ -26,16 +35,16 @@ const router = createBrowserRouter(
         {
             path: "/register",
             element: <RegisterHomePage />,
-            loader: async () => {
+            loader: () => registrationGuard(async () => {
                 let user = await getUser();
                 let Console = await getConsole();
                 return { user, Console };
-            },
+            }),
         },
         {
             path: "/register/form",
             element: <FormPage />,
-            loader: async () => {
+            loader: () => registrationGuard(async () => {
                 let user = await getUser();
                 let Console = await getConsole();
 
@@ -44,12 +53,12 @@ const router = createBrowserRouter(
                 }
 
                 return { user, Console };
-            },
+            }),
         },
         {
             path: "/profile",
             element: <ProfilePage />,
-            loader: async () => {
+            loader: () => registrationGuard(async () => {
                 let user = await getUser();
                 let Console = await getConsole();
 
@@ -58,7 +67,7 @@ const router = createBrowserRouter(
                 }
 
                 return { user, Console };
-            },
+            }),
         },
         {
             path: "/admin",
@@ -75,16 +84,18 @@ const router = createBrowserRouter(
         {
             path: `/special-register/${config.SPECIAL_SECRET_URL}`,
             element: <SpecialRegisterPage />,
+            loader: () => registrationGuard(async () => {
+                return null;
+            }),
         },
 
         {
             path: `/special-register/${config.SPECIAL_SECRET_URL}/${config.SPECIAL_SECRET_FORM_URL}`,
             element: <SpecialFormPage />,
-            loader: async () => {
+            loader: () => registrationGuard(async () => {
                 let user = await getSpecialUser();
-
                 return { user };
-            },
+            }),
         },
     ],
 );
