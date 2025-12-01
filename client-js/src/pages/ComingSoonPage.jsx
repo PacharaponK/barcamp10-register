@@ -1,30 +1,8 @@
 import { motion } from "framer-motion";
-import { Link, useNavigate } from "react-router-dom";
-import { Star, Home, Cloud, Fish } from "lucide-react";
-import { useEffect } from "react";
+import { Link } from "react-router-dom";
+import { Home, Anchor, Star, Cloud, Fish } from "lucide-react";
 
-const NotFoundPage = () => {
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      navigate("/");
-    }, 10000);
-
-    return () => clearTimeout(timer);
-  }, [navigate]);
-
-  // Animation variants (reused/adapted from App.jsx)
-  const float = {
-    animate: {
-      y: [0, -20, 0],
-      transition: {
-        duration: 4,
-        repeat: Infinity,
-        ease: "easeInOut",
-      },
-    },
-  };
+const ComingSoonPage = () => {
 
   const swim = {
     animate: {
@@ -99,84 +77,74 @@ const NotFoundPage = () => {
       </motion.div>
 
       {/* Main Content */}
-      <div className="z-10 text-center px-4 relative">
+      <div className="z-10 text-center px-4 relative max-w-4xl">
         <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.8 }}
-          className="mb-6 relative inline-block"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="mb-8"
         >
-          <h1 className="text-9xl font-extrabold text-white">
-            404
+          {/* Anchor Icon */}
+          <div className="inline-block mb-6">
+            <div className="bg-cyan-500/20 backdrop-blur-md p-6 rounded-full border border-cyan-400/50 shadow-glow-cyan-lg">
+              <Anchor size={64} className="text-cyan-300" />
+            </div>
+          </div>
+
+          <h1 className="text-5xl md:text-7xl font-extrabold text-white mb-4 drop-shadow-glow-cyan-sm">
+            Coming Soon
           </h1>
-          {/* Decorative Anchor on the 0 */}
-          <motion.div
-            variants={float}
-            animate="animate"
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-cyan-100 drop-shadow-lg"
-          >
-          </motion.div>
+          <h2 className="text-2xl md:text-3xl font-bold text-cyan-300 mb-2 tracking-wide">
+            กำลังเตรียมการ...
+          </h2>
         </motion.div>
 
-        <motion.h2
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3, duration: 0.8 }}
-          className="text-3xl md:text-4xl font-bold text-white mb-4 tracking-wide"
+          transition={{ delay: 0.2, duration: 0.6 }}
+          className="bg-brand-dark/40 backdrop-blur-md rounded-2xl border border-cyan-500/30 shadow-2xl p-8 mb-8"
         >
-          หลงทางในทะเลสงขลา?
-        </motion.h2>
+          <h3 className="text-xl md:text-2xl font-bold text-white mb-4">
+            Barcamp 10 Songkhla
+          </h3>
+          <p className="text-cyan-100/80 text-base md:text-lg mb-6 font-light leading-relaxed">
+            ระบบลงทะเบียนกำลังเตรียมพร้อมสำหรับงาน Barcamp ครั้งที่ 10<br />
+            ในธีม <span className="text-cyan-300 font-medium">&quot;Songkhla Night Sea&quot;</span>
+          </p>
+        </motion.div>
 
         <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 0.5, duration: 0.8 }}
-          className="text-cyan-100/80 text-lg md:text-xl mb-4 max-w-2xl mx-auto font-light"
+          transition={{ delay: 0.4, duration: 0.6 }}
+          className="text-cyan-100/70 text-base md:text-lg mb-8 max-w-2xl mx-auto font-light"
         >
-          เหมือนหน้าที่คุณกำลังมองหาได้ลอยหายไปในทะเลสงขลายามค่ำคืน...
-        </motion.p>
-
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.6, duration: 0.8 }}
-          className="text-cyan-200/60 text-base md:text-lg mb-10 max-w-xl mx-auto font-light italic"
-        >
-          The page you&apos;re looking for seems to have drifted away into the Songkhla Night Sea.
+          กรุณาติดตามข่าวสารและการเปิดรับสมัครผ่านช่องทางโซเชียลมีเดียของเรา
         </motion.p>
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.7, duration: 0.8 }}
-          className="flex flex-col items-center gap-4"
+          transition={{ delay: 0.6, duration: 0.6 }}
         >
           <Link to="/">
             <motion.button
-              whileHover={{ scale: 1.05, boxShadow: "0px 0px 20px rgba(34, 211, 238, 0.4)" }}
+              whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               className="bg-cyan-500/20 backdrop-blur-md border border-cyan-400/50 text-cyan-100 font-bold py-3 px-8 rounded-full shadow-lg transition-all flex items-center gap-2 mx-auto hover:bg-cyan-500/40 hover:text-white"
             >
               <Home size={20} />
-              กลับสู่ฝั่ง / Return to Shore
+              กลับสู่หน้าหลัก / Back to Home
             </motion.button>
           </Link>
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.9, duration: 0.8 }}
-            className="text-cyan-100/50 text-sm mt-2"
-          >
-            กำลังพาคุณกลับบ้านอัตโนมัติใน 10 วินาที...
-          </motion.p>
         </motion.div>
       </div>
 
-
-      {/* Sea Waves at Bottom */}
-      <div className="absolute bottom-0 w-full h-24 overflow-hidden z-0 opacity-50">
+      {/* Simple Wave at Bottom */}
+      <div className="absolute bottom-0 w-full h-24 overflow-hidden z-0 opacity-30">
         <svg className="w-full h-full text-wave-blue fill-current" viewBox="0 0 1440 320" preserveAspectRatio="none">
-          <path d="M0,224L48,213.3C96,203,192,181,288,181.3C384,181,480,203,576,224C672,245,768,267,864,261.3C960,256,1056,224,1152,208C1248,192,1344,192,1392,192L1440,192L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
+          <path d="M0,192L48,197.3C96,203,192,213,288,229.3C384,245,480,267,576,250.7C672,235,768,181,864,181.3C960,181,1056,235,1152,234.7C1248,235,1344,181,1392,154.7L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
         </svg>
       </div>
 
@@ -184,4 +152,4 @@ const NotFoundPage = () => {
   );
 };
 
-export default NotFoundPage;
+export default ComingSoonPage;

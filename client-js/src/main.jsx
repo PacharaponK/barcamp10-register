@@ -17,12 +17,13 @@ import { getConsole } from "./api/console.js";
 import config from "./services/config.js";
 import RegisterHomePage from "./pages/RegisterHomePage.jsx";
 import NotFoundPage from "./pages/NotFoundPage.jsx";
+import ComingSoonPage from "./pages/ComingSoonPage.jsx";
 
 const IS_REGISTRATION_OPEN = false; // TODO: Change to true when registration opens
 
 const registrationGuard = async (loaderFn) => {
     if (!IS_REGISTRATION_OPEN) {
-        return redirect("/");
+        return redirect("/coming-soon");
     }
     return loaderFn();
 };
@@ -98,6 +99,10 @@ const router = createBrowserRouter(
                 let user = await getSpecialUser();
                 return { user };
             }),
+        },
+        {
+            path: "/coming-soon",
+            element: <ComingSoonPage />,
         },
         {
             path: "*",
