@@ -429,7 +429,7 @@ function App() {
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.8, delay: 0.3 }}
                 whileHover={{ scale: 1.05 }}
-                className="relative text-5xl md:text-9xl font-extrabold mb-0 flex flex-col md:flex-row items-center justify-center gap-2 md:gap-4"
+                className="relative text-5xl min-[400px]:text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-extrabold mb-0 flex flex-wrap justify-center gap-x-3 gap-y-0 md:gap-4"
               >
                 {/* Animated gradient text with letter animation */}
                 <span className="relative inline-block">
@@ -439,10 +439,10 @@ function App() {
                       initial={{ opacity: 0, y: 50 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.5, delay: 0.5 + i * 0.1 }}
-                      className="inline-block text-cyan-400"
-                      style={{
-                        textShadow: "0 0 30px rgba(6, 182, 212, 1), 0 0 60px rgba(6, 182, 212, 0.6), 0 0 90px rgba(6, 182, 212, 0.3)",
-                      }}
+                      className="inline-block text-cyan-400 "
+                      // style={{
+                      //   textShadow: "0 0 30px rgba(6, 182, 212, 1), 0 0 60px rgba(6, 182, 212, 0.6), 0 0 90px rgba(6, 182, 212, 0.3)",
+                      // }}
                     >
                       {letter}
                     </motion.span>
@@ -467,7 +467,7 @@ function App() {
               </motion.h1>
             </div>
 
-            <p className="text-xl md:text-3xl mb-10 text-cyan-100 font-light tracking-[0.2em] uppercase drop-shadow-text-sm md:drop-shadow-md flex items-center justify-center gap-3">
+            <p className="text-xl md:text-3xl mb-10 text-cyan-500 sm:text-cyan-100  font-light tracking-[0.2em] uppercase drop-shadow-text-sm md:drop-shadow-md flex items-center justify-center gap-3">
               <Typewriter backspace="slow">Songkhla Night Sea</Typewriter>
             </p>
 
@@ -494,8 +494,8 @@ function App() {
                   <Calendar className="text-cyan-300" size={24} />
                 </div>
                 <div>
-                  <span className="text-cyan-100/60 text-[10px] font-bold tracking-widest uppercase block mb-1">Date</span>
-                  <span className="text-white font-medium text-base">Saturday, 7 Feb 2026</span>
+                  <span className="text-cyan-100/60 font-bold tracking-widest uppercase block mb-1">Date</span>
+                  <span className="text-white font-medium text-xs sm:text-base">Saturday, 7 Feb 2026</span>
                 </div>
               </div>
               <div className="flex flex-col group items-center gap-2 text-center">
@@ -504,7 +504,7 @@ function App() {
                 </a>
                 <div>
                   <span className="text-cyan-100/60 text-[10px] font-bold tracking-widest uppercase block mb-1">Location</span>
-                  <span className="text-white font-medium text-base leading-relaxed">
+                  <span className="text-white font-medium text-xs sm:text-base  leading-relaxed">
                     Learning resources center building (LRC) ชั้น 8,<br />Prince of Songkla University
                   </span>
                 </div>
