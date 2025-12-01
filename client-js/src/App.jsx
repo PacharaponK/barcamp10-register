@@ -439,10 +439,9 @@ function App() {
                       initial={{ opacity: 0, y: 50 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.5, delay: 0.5 + i * 0.1 }}
-                      className="inline-block text-transparent bg-clip-text bg-gradient-to-b from-cyan-300 via-cyan-400 to-blue-500"
+                      className="inline-block text-cyan-400"
                       style={{
-                        WebkitTextStroke: "2px rgba(34, 211, 238, 0.4)",
-                        filter: "drop-shadow(0 0 20px rgba(34, 211, 238, 0.6))",
+                        textShadow: "0 0 30px rgba(6, 182, 212, 1), 0 0 60px rgba(6, 182, 212, 0.6), 0 0 90px rgba(6, 182, 212, 0.3)",
                       }}
                     >
                       {letter}
@@ -457,36 +456,13 @@ function App() {
                   className="inline-block relative"
                 >
                   <span
-                    className="text-transparent bg-clip-text bg-gradient-to-b from-yellow-300 via-cyan-300 to-blue-400"
+                    className="text-cyan-400"
                     style={{
-                      WebkitTextStroke: "2px rgba(34, 211, 238, 0.5)",
-                      filter: "drop-shadow(0 0 25px rgba(14, 14, 14, 0.8)",
+                      textShadow: "0 0 40px rgba(0, 31, 46, 1), 0 0 80px rgba(6, 182, 212, 0.6), 0 0 120px rgba(6, 182, 212, 0.3)",
                     }}
                   >
                     10
                   </span>
-                  {/* Subtle pulsing dots around 10 */}
-                  {[0, 90, 180, 270].map((angle, i) => (
-                    <motion.div
-                      key={`dot-${i}`}
-                      animate={{
-                        scale: [1, 1.5, 1],
-                        opacity: [0.4, 0.8, 0.4],
-                      }}
-                      transition={{
-                        duration: 2,
-                        repeat: Infinity,
-                        delay: i * 0.2,
-                        ease: "easeInOut",
-                      }}
-                      className="absolute w-2 h-2 bg-yellow-400 rounded-full"
-                      style={{
-                        top: `${50 + 40 * Math.sin((angle * Math.PI) / 180)}%`,
-                        left: `${50 + 40 * Math.cos((angle * Math.PI) / 180)}%`,
-                        transform: "translate(-50%, -50%)",
-                      }}
-                    />
-                  ))}
                 </motion.span>
               </motion.h1>
             </div>
