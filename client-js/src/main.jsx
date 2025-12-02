@@ -1,4 +1,4 @@
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { createBrowserRouter, RouterProvider, redirect } from "react-router-dom";
 import ReactDOM from "react-dom/client";
 import React from "react";
 import App from "./App.jsx";
@@ -16,6 +16,17 @@ import { getConsole } from "./api/console.js";
 
 import config from "./services/config.js";
 import RegisterHomePage from "./pages/RegisterHomePage.jsx";
+import NotFoundPage from "./pages/NotFoundPage.jsx";
+import ComingSoonPage from "./pages/ComingSoonPage.jsx";
+
+const IS_REGISTRATION_OPEN = false; // TODO: Change to true when registration opens
+
+const registrationGuard = async (loaderFn) => {
+    if (!IS_REGISTRATION_OPEN) {
+        return redirect("/coming-soon");
+    }
+    return loaderFn();
+};
 
 const router = createBrowserRouter(
     [
@@ -26,65 +37,76 @@ const router = createBrowserRouter(
         {
             path: "/register",
             element: <RegisterHomePage />,
-            loader: async () => {
+            loader: () => registrationGuard(async () => {
                 let user = await getUser();
                 let Console = await getConsole();
                 return { user, Console };
-            },
+            }),
         },
         {
             path: "/register/form",
             element: <FormPage />,
-            loader: async () => {
+            loader: () => registrationGuard(async () => {
                 let user = await getUser();
                 let Console = await getConsole();
 
                 if (user.message === "No session.") {
-                    return (window.location.href = "/register");
+                    return redirect("/register");
                 }
 
                 return { user, Console };
-            },
+            }),
         },
         {
             path: "/profile",
             element: <ProfilePage />,
-            loader: async () => {
+            loader: () => registrationGuard(async () => {
                 let user = await getUser();
                 let Console = await getConsole();
 
                 if (user.message === "No session.") {
-                    return (window.location.href = "/register");
+                    return redirect("/register");
                 }
 
                 return { user, Console };
-            },
+            }),
         },
         {
             path: "/admin",
             element: <AdminPage />,
+            loader: () => registrationGuard(async () => null),
         },
         {
             path: "/admin/control-panel",
             element: <AdminConsolePage />,
-            loader: async () => {
+            loader: () => registrationGuard(async () => {
                 let Console = await getConsole();
                 return { Console };
-            },
+            }),
         },
         {
             path: `/special-register/${config.SPECIAL_SECRET_URL}`,
             element: <SpecialRegisterPage />,
+            loader: () => registrationGuard(async () => {
+                return null;
+            }),
         },
 
         {
             path: `/special-register/${config.SPECIAL_SECRET_URL}/${config.SPECIAL_SECRET_FORM_URL}`,
             element: <SpecialFormPage />,
-            loader: async () => {
+            loader: () => registrationGuard(async () => {
                 let user = await getSpecialUser();
-
                 return { user };
-            },
+            }),
+        },
+        {
+            path: "/coming-soon",
+            element: <ComingSoonPage />,
+        },
+        {
+            path: "*",
+            element: <NotFoundPage />,
         },
     ],
 );
