@@ -975,56 +975,84 @@ function App() {
 
           {/* Parallax Gallery */}
           <div className="z-10 w-full flex flex-col gap-8 py-10">
-            <ParallaxScroll baseVelocity={-2}>
-              {galleryImages1.map((i) => (
-                <div
-                  key={`row1-${i}`}
-                  className="hover:scale-90 bg-teal-900/40 border border-teal-500/30 rounded-xl h-48 w-72 md:h-64 md:w-96 flex items-center justify-center shadow-lg group overflow-hidden relative shrink-0 will-change-transform"
-                >
-                  <img
-                    loading="lazy"
-                    src={`/gallery9/${i}.jpg`}
-                    alt={`Gallery Image ${i}`}
-                    className="w-full h-full object-cover rounded-xl opacity-80 group-hover:opacity-100 transition-opacity duration-300"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-teal-950/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                </div>
-              ))}
-            </ParallaxScroll>
+            {/* Desktop Parallax Gallery */}
+            <div className="hidden md:flex flex-col gap-8">
+              <ParallaxScroll baseVelocity={-2}>
+                {galleryImages1.map((i) => (
+                  <div
+                    key={`row1-${i}`}
+                    className="hover:scale-90 bg-teal-900/40 border border-teal-500/30 rounded-xl h-64 w-96 flex items-center justify-center shadow-lg group overflow-hidden relative shrink-0 will-change-transform"
+                  >
+                    <img
+                      loading="lazy"
+                      src={`/gallery9/${i}.jpg`}
+                      alt={`Gallery Image ${i}`}
+                      className="w-full h-full object-cover rounded-xl opacity-80 group-hover:opacity-100 transition-opacity duration-300"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-teal-950/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  </div>
+                ))}
+              </ParallaxScroll>
 
-            <ParallaxScroll baseVelocity={2}>
-              {galleryImages2.map((i) => (
-                <div
-                  key={`row2-${i}`}
-                  className="hover:scale-90  bg-teal-900/40 border border-teal-500/30 rounded-xl h-48 w-72 md:h-64 md:w-96 flex items-center justify-center shadow-lg group overflow-hidden relative shrink-0 will-change-transform"
-                >
-                  <img
-                    loading="lazy"
-                    src={`/gallery9/${i}.jpg`}
-                    alt={`Gallery Image ${i}`}
-                    className="w-full h-full object-cover rounded-xl opacity-80 group-hover:opacity-100 transition-opacity duration-300"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-teal-950/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                </div>
-              ))}
-            </ParallaxScroll>
+              <ParallaxScroll baseVelocity={2}>
+                {galleryImages2.map((i) => (
+                  <div
+                    key={`row2-${i}`}
+                    className="hover:scale-90  bg-teal-900/40 border border-teal-500/30 rounded-xl h-64 w-96 flex items-center justify-center shadow-lg group overflow-hidden relative shrink-0 will-change-transform"
+                  >
+                    <img
+                      loading="lazy"
+                      src={`/gallery9/${i}.jpg`}
+                      alt={`Gallery Image ${i}`}
+                      className="w-full h-full object-cover rounded-xl opacity-80 group-hover:opacity-100 transition-opacity duration-300"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-teal-950/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  </div>
+                ))}
+              </ParallaxScroll>
 
-            <ParallaxScroll baseVelocity={-2}>
-              {galleryImages3.map((i) => (
-                <div
-                  key={`row3-${i}`}
-                  className="hover:scale-90 bg-teal-900/40 border border-teal-500/30 rounded-xl h-48 w-72 md:h-64 md:w-96 flex items-center justify-center shadow-lg group overflow-hidden relative shrink-0 will-change-transform"
+              <ParallaxScroll baseVelocity={-2}>
+                {galleryImages3.map((i) => (
+                  <div
+                    key={`row3-${i}`}
+                    className="hover:scale-90 bg-teal-900/40 border border-teal-500/30 rounded-xl h-64 w-96 flex items-center justify-center shadow-lg group overflow-hidden relative shrink-0 will-change-transform"
+                  >
+                    <img
+                      loading="lazy"
+                      src={`/gallery9/${i}.jpg`}
+                      alt={`Gallery Image ${i}`}
+                      className="w-full h-full object-cover rounded-xl opacity-80 group-hover:opacity-100 transition-opacity duration-300"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-teal-950/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  </div>
+                ))}
+              </ParallaxScroll>
+            </div>
+
+            {/* Mobile Scroll Gallery */}
+            <div className="md:hidden flex flex-col gap-6 py-4">
+              {[galleryImages1, galleryImages2, galleryImages3].map((rowImages, index) => (
+                <div 
+                  key={`mobile-row-${index}`}
+                  className="flex overflow-x-auto gap-4 px-4 pb-2 snap-x snap-mandatory"
+                  style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }} 
                 >
-                  <img
-                    loading="lazy"
-                    src={`/gallery9/${i}.jpg`}
-                    alt={`Gallery Image ${i}`}
-                    className="w-full h-full object-cover rounded-xl opacity-80 group-hover:opacity-100 transition-opacity duration-300"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-teal-950/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  {rowImages.map((i) => (
+                    <div
+                      key={`mobile-img-${i}`}
+                      className="bg-teal-900/40 border border-teal-500/30 rounded-xl h-40 w-64 flex-shrink-0 flex items-center justify-center shadow-lg overflow-hidden relative snap-center"
+                    >
+                      <img
+                        loading="lazy"
+                        src={`/gallery9/${i}.jpg`}
+                        alt={`Gallery Image ${i}`}
+                        className="w-full h-full object-cover rounded-xl opacity-90"
+                      />
+                    </div>
+                  ))}
                 </div>
               ))}
-            </ParallaxScroll>
+            </div>
 
 
           </div>
