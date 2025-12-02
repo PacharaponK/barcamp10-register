@@ -14,10 +14,12 @@ import {
 import { Typewriter } from "motion-plus/react"
 import {
   Cloud, Moon, Star, Anchor, Ship, Fish, Sparkles,
-  Calendar, Image as ImageIcon, Home, Info, Map, MapPin,
-  Facebook, Instagram, MessageCircle, Zap, Coffee, Menu, X
+  Calendar, Map, MapPin,
+  Facebook, Instagram, MessageCircle, Zap, Coffee,
+  Home, Info, Image as ImageIcon
 } from "lucide-react";
-import { useEffect, useState, useRef } from "react";
+import Navbar from "./components/Navbar";
+import { useEffect, useState, useRef, useMemo } from "react";
 import useDynamicFavicon from "./hooks/useDynamicFavicon";
 
 // Utility for wrapping numbers
@@ -25,6 +27,23 @@ const wrap = (min, max, v) => {
   const rangeSize = max - min;
   return ((((v - min) % rangeSize) + rangeSize) % rangeSize) + min;
 };
+
+const AnimatedNumber = ({ value }) => (
+  <div className="relative h-10 md:h-16 w-14 md:w-20 overflow-hidden flex items-center justify-center">
+    <AnimatePresence mode="popLayout">
+      <motion.span
+        key={value}
+        initial={{ y: "100%" }}
+        animate={{ y: "0%" }}
+        exit={{ y: "-100%" }}
+        transition={{ type: "spring", stiffness: 300, damping: 30 }}
+        className="absolute font-mono font-bold tabular-nums leading-none text-4xl md:text-6xl"
+      >
+        {value}
+      </motion.span>
+    </AnimatePresence>
+  </div>
+);
 
 function ParallaxScroll({ children, baseVelocity = 100 }) {
   const baseX = useMotionValue(0);
@@ -66,7 +85,7 @@ function ParallaxScroll({ children, baseVelocity = 100 }) {
 
   return (
     <div className="parallax overflow-hidden flex flex-nowrap m-0 whitespace-nowrap w-full">
-      <motion.div className="scroller flex flex-nowrap whitespace-nowrap" style={{ x }}>
+      <motion.div className="scroller flex flex-nowrap whitespace-nowrap will-change-transform" style={{ x }}>
         <span className="flex gap-4 mr-4">{children}</span>
         <span className="flex gap-4 mr-4">{children}</span>
         <span className="flex gap-4 mr-4">{children}</span>
@@ -86,7 +105,42 @@ function App() {
   });
 
   const [activeSection, setActiveSection] = useState("home");
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isRegistrationOpen, setIsRegistrationOpen] = useState(false);
+  const [timeLeft, setTimeLeft] = useState({
+    days: 0,
+    hours: 0,
+    minutes: 0,
+    seconds: 0,
+  });
+
+  useEffect(() => {
+    // Target date: January 5, 2026 00:00:00 (Thai Time GMT+7)
+    // Using ISO 8601 format with offset
+    const targetDate = new Date("2026-01-05T00:00:00+07:00");
+
+    const calculateTimeLeft = () => {
+      const now = new Date();
+      const difference = targetDate - now;
+
+      if (difference > 0) {
+        const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((difference / (1000 * 60 * 60)) % 24);
+        const minutes = Math.floor((difference / 1000 / 60) % 60);
+        const seconds = Math.floor((difference / 1000) % 60);
+
+        setTimeLeft({ days, hours, minutes, seconds });
+        setIsRegistrationOpen(false);
+      } else {
+        setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+        setIsRegistrationOpen(true);
+      }
+    };
+
+    calculateTimeLeft(); // Initial calculation
+    const interval = setInterval(calculateTimeLeft, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   // Enable smooth scrolling and active section detection
   // Enable smooth scrolling and active section detection using IntersectionObserver
@@ -171,6 +225,8 @@ function App() {
     },
   };
 
+
+
   const navItems = [
     { id: "home", label: "HOME", icon: Home },
     { id: "about", label: "ABOUT", icon: Info },
@@ -230,101 +286,8 @@ function App() {
         style={{ scaleX }}
       />
 
-      {/* Navigation */}
-      <header className="fixed top-0 left-0 w-full h-20 z-50 backdrop-blur-md bg-brand-dark/60 border-b border-white/10 shadow-lg transition-all duration-300">
-        <motion.nav
-          initial={{ y: -100 }}
-          animate={{ y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="flex items-center justify-between px-4 md:px-8 h-full max-w-7xl mx-auto"
-        >
-          <a href="#home" className="text-2xl md:text-3xl text-white drop-shadow-glow-md font-bold flex items-center gap-2">
-            <img src="barcamp10logo.png" alt="logo10" className="w-56 h-20" />
-          </a>
-
-          {/* Desktop Menu */}
-          <ul className="hidden lg:flex space-x-8 text-white">
-            {navItems.map((item) => {
-              const Icon = item.icon;
-              const isActive = activeSection === item.id;
-              return (
-                <li key={item.id} className="relative">
-                  <a
-                    href={`#${item.id}`}
-                    className={`flex items-center gap-2 px-4 py-2 rounded-full transition-all duration-300 ${isActive ? "text-cyan-300 bg-white/10" : "hover:text-cyan-200 hover:bg-white/5"
-                      }`}
-                  >
-                    <Icon size={18} />
-                    <span className="font-medium tracking-wide">{item.label}</span>
-                    {isActive && (
-                      <motion.div
-                        layoutId="activeTab"
-                        className="absolute inset-0 rounded-full border border-cyan-400/50"
-                        transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
-                      />
-                    )}
-                  </a>
-                </li>
-              );
-            })}
-          </ul>
-
-          {/* Mobile Menu Button */}
-          <div className="lg:hidden text-white z-50 relative">
-            <button
-              onClick={() => setIsMobileMenuOpen(true)}
-              className="p-2 focus:outline-none"
-            >
-              <Menu size={28} />
-            </button>
-          </div>
-        </motion.nav>
-      </header>
-
-      {/* Mobile Menu Overlay - Moved outside header to avoid transform stacking context issues */}
-      <AnimatePresence>
-        {isMobileMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0, x: "100%" }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: "100%" }}
-            transition={{ type: "spring", damping: 25, stiffness: 200 }}
-            className="fixed inset-0 bg-brand-dark/95 backdrop-blur-xl z-[60] flex flex-col items-center justify-center md:hidden"
-          >
-            {/* Close Button */}
-            <div className="absolute top-6 right-8">
-              <button
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="p-2 text-white focus:outline-none hover:text-cyan-300 transition-colors"
-              >
-                <X size={28} />
-              </button>
-            </div>
-
-            <ul className="flex flex-col items-center gap-8 text-white">
-              {navItems.map((item) => (
-                <motion.li
-                  key={item.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.1 }}
-                >
-                  <a
-                    href={`#${item.id}`}
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className={`flex items-center gap-3 text-2xl font-medium ${activeSection === item.id ? "text-cyan-300" : "text-white/80"
-                      }`}
-                  >
-                    <item.icon size={24} />
-                    {item.label}
-                  </a>
-                </motion.li>
-              ))}
-            </ul>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
+      <Navbar activeSection={activeSection} navItems={navItems} />
+      
       <main className="flex flex-col relative pt-20">
         {/* HOME SECTION: Moon & Clouds & Stars */}
         <section
@@ -339,27 +302,30 @@ function App() {
             className="absolute top-20 right-10 lg:top-10 lg:right-32 z-0 "
             id="home"
           >
-            <div className="relative w-48 h-48 lg:w-96 lg:h-96 bg-yellow-100 rounded-full shadow-glow-lg lg:shadow-glow-xl overflow-hidden ">
+            <div className="relative w-48 h-48 lg:w-96 lg:h-96 bg-white rounded-full shadow-glow-lg lg:shadow-glow-xl overflow-hidden ">
               <div className="absolute w-full h-full bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-20"></div>
               {/* Craters */}
-              <div className="absolute top-10 left-10 w-12 h-12 lg:w-20 lg:h-20 bg-yellow-300 rounded-full opacity-30 blur-xl"></div>
-              <div className="absolute bottom-20 right-20 w-20 h-20 lg:w-32 lg:h-32 bg-yellow-300 rounded-full opacity-30 blur-xl"></div>
+              <div className="absolute top-10 left-10 w-12 h-12 lg:w-20 lg:h-20 bg-yellow-100 rounded-full opacity-30 blur-xl"></div>
+              <div className="absolute bottom-20 right-20 w-20 h-20 lg:w-32 lg:h-32 bg-yellow-100 rounded-full opacity-30 blur-xl"></div>
             </div>
           </motion.div>
 
           {/* Stars */}
-          {[...Array(15)].map((_, i) => (
+          {useMemo(() => [...Array(15)].map((_, i) => ({
+            id: i,
+            top: `${Math.random() * 100}%`,
+            left: `${Math.random() * 100}%`,
+            size: Math.random() * 6 + 2
+          })), []).map((star) => (
             <motion.div
-              key={`home-star-${i}`}
+              key={`home-star-${star.id}`}
               className="absolute text-white/80"
               style={{
-                top: `${Math.random() * 100}%`,
-                left: `${Math.random() * 100}%`,
+                top: star.top,
+                left: star.left,
               }}
-              animate={{ opacity: [0.2, 1, 0.2], scale: [0.8, 1.2, 0.8] }}
-              transition={{ duration: Math.random() * 3 + 2, repeat: Infinity }}
             >
-              <Star size={Math.random() * 6 + 2} fill="currentColor" strokeWidth={0} />
+              <Star size={star.size} fill="currentColor" strokeWidth={0} />
             </motion.div>
           ))}
 
@@ -390,69 +356,25 @@ function App() {
           >
             {/* Enhanced BARCAMP 10 Title */}
             <div className="relative mb-6">
-              {/* Animated Glow Background */}
-              <motion.div
-                animate={{
-                  scale: [1, 1.05, 1],
-                  opacity: [0.3, 0.5, 0.3],
-                }}
-                transition={{
-                  duration: 3,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                }}
-                className="absolute inset-0 blur-3xl bg-gradient-to-r from-cyan-400 via-blue-500 to-cyan-400 rounded-full"
-              />
-
-              {/* Sparkles around title */}
-              {[...Array(6)].map((_, i) => (
-                <motion.div
-                  key={`title-sparkle-${i}`}
-                  className="absolute text-yellow-300"
-                  style={{
-                    top: `${20 + Math.random() * 60}%`,
-                    left: `${10 + Math.random() * 80}%`,
-                  }}
-                  animate={{
-                    scale: [0, 1.5, 0],
-                    rotate: [0, 180, 360],
-                    opacity: [0, 1, 0],
-                  }}
-                  transition={{
-                    duration: 2,
-                    repeat: Infinity,
-                    delay: i * 0.3,
-                    ease: "easeInOut",
-                  }}
-                >
-                  <Sparkles size={16} fill="currentColor" />
-                </motion.div>
-              ))}
-
               {/* Main Title */}
               <motion.h1
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.8, delay: 0.3 }}
                 whileHover={{ scale: 1.05 }}
-                className="relative text-5xl md:text-8xl xl:text-9xl font-extrabold mb-0 flex flex-wrap justify-center gap-x-3 gap-y-0 lg:gap-4"
+                className="relative text-5xl md:text-8xl xl:text-9xl font-extrabold mb-0 flex flex-wrap justify-center gap-x-3 gap-y-0 lg:gap-4 "
               >
                 {/* Animated gradient text with letter animation */}
                 <span className="relative inline-block">
-                  {["B", "A", "R", "C", "A", "M", "P"].map((letter, i) => (
                     <motion.span
-                      key={`letter-${i}`}
                       initial={{ opacity: 0, y: 50 }}
                       animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.5, delay: 0.5 + i * 0.1 }}
-                      className="inline-block text-cyan-400"
-                      // style={{
-                      //   textShadow: "0 0 30px rgba(6, 182, 212, 1), 0 0 60px rgba(6, 182, 212, 0.6), 0 0 90px rgba(6, 182, 212, 0.3)",
-                      // }}
+                      transition={{ duration: 0.5, delay: 0.5 }}
+                      className="inline-block"
                     >
-                      {letter}
+                      <span className="text-transparent bg-clip-text bg-gradient-to-b from-orange-300 via-orange-500 to-red-600 ">BAR</span>
+                      <span className="text-transparent bg-clip-text bg-gradient-to-b from-white via-cyan-200 to-cyan-400 ">CAMP</span>
                     </motion.span>
-                  ))}
                 </span>
 
                 <motion.span
@@ -462,10 +384,7 @@ function App() {
                   className="inline-block relative"
                 >
                   <span
-                    className="text-cyan-400"
-                    style={{
-                      textShadow: "0 0 40px rgba(0, 31, 46, 1), 0 0 80px rgba(6, 182, 212, 0.6), 0 0 120px rgba(6, 182, 212, 0.3)",
-                    }}
+                    className="text-transparent bg-clip-text bg-gradient-to-b from-white via-cyan-200 to-cyan-400"
                   >
                     10
                   </span>
@@ -483,19 +402,72 @@ function App() {
               transition={{ duration: 0.8, delay: 1.5 }}
               className=" text-cyan-200 text-sm lg:text-base max-w-xl mx-auto font-light leading-relaxed mb-10"
             >
-              Barcamp Songkhla คืองานสัมมนาแบบ Unconference ที่เปิดโอกาสให้ทุกคนได้มาแบ่งปันความรู้ ประสบการณ์ และเรื่องที่สนใจ ในบรรยากาศที่เป็นกันเอง
+              Barcamp Songkhla คืองานสัมมนา ที่เปิดโอกาสให้ทุกคนได้มาแบ่งปันความรู้ ประสบการณ์ และเรื่องที่สนใจ ในบรรยากาศที่เป็นกันเอง
             </motion.p>
 
-            {/* <Link to="/register">
-              <motion.button
-                whileHover={{ scale: 1.1, boxShadow: "0px 0px 30px rgba(34, 211, 238, 0.6)" }}
-                whileTap={{ scale: 0.95 }}
-                className="bg-cyan-500/20 backdrop-blur-sm border border-cyan-400/50 text-cyan-100 font-bold py-3 px-8 md:py-4 md:px-12 rounded-full shadow-[0_0_20px_rgba(34,211,238,0.2)] transition-all text-lg md:text-xl hover:bg-cyan-500/40 hover:text-white flex items-center gap-2 mx-auto"
-              >
-                <Sparkles size={20} />
-                Register Now
-              </motion.button>
-            </Link> */}
+            {!isRegistrationOpen ? (
+            <div className="flex flex-col items-center mb-10 text-white">
+              <p className="text-sm md:text-base tracking-widest uppercase mb-4 font-medium">
+                เปิดลงทะเบียนในอีก
+              </p>
+
+              <div className="flex items-start justify-center gap-3 md:gap-4 text-white">
+                
+                {/* Days */}
+                <div className="flex flex-col items-center">
+                  <AnimatedNumber value={timeLeft.days.toString().padStart(2, '0')} />
+                  <span className="text-[10px] md:text-xs uppercase tracking-widest mt-2">
+                    Days
+                  </span>
+                </div>
+
+                {/* Colon Separator */}
+                <span className="text-2xl md:text-4xl  pt-1 md:pt-2">:</span>
+
+                {/* Hours */}
+                <div className="flex flex-col items-center">
+                  <AnimatedNumber value={timeLeft.hours.toString().padStart(2, '0')} />
+                  <span className="text-[10px] md:text-xs  uppercase tracking-widest mt-2">
+                    Hours
+                  </span>
+                </div>
+
+                {/* Colon Separator */}
+                <span className="text-2xl md:text-4xl pt-1 md:pt-2">:</span>
+
+                {/* Minutes */}
+                <div className="flex flex-col items-center">
+                  <AnimatedNumber value={timeLeft.minutes.toString().padStart(2, '0')} />
+                  <span className="text-[10px] md:text-xs  uppercase tracking-widest mt-2">
+                    Minutes
+                  </span>
+                </div>
+
+                {/* Colon Separator */}
+                <span className="text-2xl md:text-4xl pt-1 md:pt-2">:</span>
+
+                {/* Seconds */}
+                <div className="flex flex-col items-center">
+                  <AnimatedNumber value={timeLeft.seconds.toString().padStart(2, '0')} />
+                  <span className="text-[10px] md:text-xs uppercase tracking-widest mt-2">
+                    Seconds
+                  </span>
+                </div>
+
+              </div>
+            </div>
+            ) : (
+              <Link to="/register">
+                <motion.button
+                  whileHover={{ scale: 1.1, boxShadow: "0px 0px 30px rgba(34, 211, 238, 0.6)" }}
+                  whileTap={{ scale: 0.95 }}
+                  className="bg-cyan-500/20 backdrop-blur-sm border border-cyan-400/50 text-cyan-100 font-bold py-3 px-8 md:py-4 md:px-12 rounded-full shadow-[0_0_20px_rgba(34,211,238,0.2)] transition-all text-lg md:text-xl hover:bg-cyan-500/40 hover:text-white flex items-center gap-2 mx-auto"
+                >
+                  <Sparkles size={20} />
+                  Register Now
+                </motion.button>
+              </Link>
+            )}
 
             {/* Mobile: Date & Location (In Flow) */}
             <motion.div
@@ -518,7 +490,7 @@ function App() {
                   <MapPin className="text-white" size={24} />
                 </a>
                 <div>
-                  <span className="text-cyan-100/60 text-[10px] font-bold tracking-widest uppercase block mb-1">Location</span>
+                  <span className="text-cyan-100/60 text-[8px] font-bold tracking-widest uppercase block mb-1">Location</span>
                   <span className="text-white font-medium text-xs sm:text-base  leading-relaxed">
                     Learning resources center building (LRC) ชั้น 8,<br />Prince of Songkla University
                   </span>
@@ -562,7 +534,7 @@ function App() {
               </a>
               <div className="text-left">
                 <span className="text-cyan-100/60 text-[10px] font-bold tracking-[0.2em] uppercase block mb-1">Location</span>
-                <span className="text-white font-medium text-base tracking-wide">
+                <span className="text-white font-medium text-base tracking-wide ">
                   Learning resources center building (LRC) ชั้น 8,<br />Prince of Songkla University
                 </span>
               </div>
@@ -582,42 +554,55 @@ function App() {
             </div>
           </motion.div>
         </section>
-
+              
         {/* SPONSOR SECTION */}
 
         <section id="sponsors" className="relative pb-10 md:pb-24 bg-gradient-sponsors overflow-hidden">
 
-          {[...Array(10)].map((_, i) => (
+          {useMemo(() => [...Array(10)].map((_, i) => ({
+            id: i,
+            top: `${Math.random() * 100}%`,
+            left: `${Math.random() * 100}%`,
+            size: Math.random() * 4 + 2,
+            duration: Math.random() * 3 + 2
+          })), []).map((star) => (
             <motion.div
-              key={`sponsor-star-${i}`}
+              key={`sponsor-star-${star.id}`}
               className="absolute text-yellow-100/60"
               style={{
-                top: `${Math.random() * 100}%`,
-                left: `${Math.random() * 100}%`,
+                top: star.top,
+                left: star.left,
               }}
               animate={{ opacity: [0.2, 0.8, 0.2], scale: [0.8, 1.2, 0.8] }}
-              transition={{ duration: Math.random() * 3 + 2, repeat: Infinity }}
+              transition={{ duration: star.duration, repeat: Infinity }}
             >
-              <Star size={Math.random() * 4 + 2} fill="currentColor" strokeWidth={0} />
+              <Star size={star.size} fill="currentColor" strokeWidth={0} />
             </motion.div>
           ))}
 
-          {[...Array(8)].map((_, i) => (
+          {useMemo(() => [...Array(8)].map((_, i) => ({
+            id: i,
+            top: `${Math.random() * 100}%`,
+            left: `${Math.random() * 100}%`,
+            width: `${Math.random() * 10 + 2}px`,
+            height: `${Math.random() * 10 + 2}px`,
+            duration: Math.random() * 5 + 3
+          })), []).map((particle) => (
             <motion.div
-              key={`sponsor-particle-${i}`}
+              key={`sponsor-particle-${particle.id}`}
               className="absolute bg-cyan-400/20 rounded-full blur-sm"
               style={{
-                top: `${Math.random() * 100}%`,
-                left: `${Math.random() * 100}%`,
-                width: `${Math.random() * 10 + 2}px`,
-                height: `${Math.random() * 10 + 2}px`,
+                top: particle.top,
+                left: particle.left,
+                width: particle.width,
+                height: particle.height,
               }}
               animate={{
                 y: [0, -30, 0],
                 opacity: [0.2, 0.6, 0.2]
               }}
               transition={{
-                duration: Math.random() * 5 + 3,
+                duration: particle.duration,
                 repeat: Infinity,
                 ease: "easeInOut"
               }}
@@ -682,18 +667,25 @@ function App() {
         {/* ABOUT SECTION */}
         <section id="about" className="relative min-h-[800px] flex flex-col items-center py-24 pb-32 overflow-hidden bg-gradient-about">
           {/* Stars */}
-          {[...Array(15)].map((_, i) => (
+          {/* Stars */}
+          {useMemo(() => [...Array(15)].map((_, i) => ({
+            id: i,
+            top: `${Math.random() * 60}%`,
+            left: `${Math.random() * 100}%`,
+            size: Math.random() * 8 + 4,
+            duration: Math.random() * 3 + 2
+          })), []).map((star) => (
             <motion.div
-              key={i}
+              key={`about-star-${star.id}`}
               className="absolute text-yellow-100"
               style={{
-                top: `${Math.random() * 60}%`,
-                left: `${Math.random() * 100}%`,
+                top: star.top,
+                left: star.left,
               }}
               animate={{ opacity: [0.2, 1, 0.2], scale: [0.8, 1.2, 0.8] }}
-              transition={{ duration: Math.random() * 3 + 2, repeat: Infinity }}
+              transition={{ duration: star.duration, repeat: Infinity }}
             >
-              <Star size={Math.random() * 8 + 4} fill="currentColor" strokeWidth={0} />
+              <Star size={star.size} fill="currentColor" strokeWidth={0} />
             </motion.div>
           ))}
 
@@ -987,9 +979,10 @@ function App() {
               {galleryImages1.map((i) => (
                 <div
                   key={`row1-${i}`}
-                  className="hover:scale-90 bg-teal-900/40 backdrop-blur-md border border-teal-500/30 rounded-xl h-48 w-72 md:h-64 md:w-96 flex items-center justify-center shadow-lg group overflow-hidden relative shrink-0"
+                  className="hover:scale-90 bg-teal-900/40 border border-teal-500/30 rounded-xl h-48 w-72 md:h-64 md:w-96 flex items-center justify-center shadow-lg group overflow-hidden relative shrink-0 will-change-transform"
                 >
                   <img
+                    loading="lazy"
                     src={`/gallery9/${i}.jpg`}
                     alt={`Gallery Image ${i}`}
                     className="w-full h-full object-cover rounded-xl opacity-80 group-hover:opacity-100 transition-opacity duration-300"
@@ -1003,9 +996,10 @@ function App() {
               {galleryImages2.map((i) => (
                 <div
                   key={`row2-${i}`}
-                  className="hover:scale-90  bg-teal-900/40 backdrop-blur-md border border-teal-500/30 rounded-xl h-48 w-72 md:h-64 md:w-96 flex items-center justify-center shadow-lg group overflow-hidden relative shrink-0"
+                  className="hover:scale-90  bg-teal-900/40 border border-teal-500/30 rounded-xl h-48 w-72 md:h-64 md:w-96 flex items-center justify-center shadow-lg group overflow-hidden relative shrink-0 will-change-transform"
                 >
                   <img
+                    loading="lazy"
                     src={`/gallery9/${i}.jpg`}
                     alt={`Gallery Image ${i}`}
                     className="w-full h-full object-cover rounded-xl opacity-80 group-hover:opacity-100 transition-opacity duration-300"
@@ -1019,9 +1013,10 @@ function App() {
               {galleryImages3.map((i) => (
                 <div
                   key={`row3-${i}`}
-                  className="hover:scale-90 bg-teal-900/40 backdrop-blur-md border border-teal-500/30 rounded-xl h-48 w-72 md:h-64 md:w-96 flex items-center justify-center shadow-lg group overflow-hidden relative shrink-0"
+                  className="hover:scale-90 bg-teal-900/40 border border-teal-500/30 rounded-xl h-48 w-72 md:h-64 md:w-96 flex items-center justify-center shadow-lg group overflow-hidden relative shrink-0 will-change-transform"
                 >
                   <img
+                    loading="lazy"
                     src={`/gallery9/${i}.jpg`}
                     alt={`Gallery Image ${i}`}
                     className="w-full h-full object-cover rounded-xl opacity-80 group-hover:opacity-100 transition-opacity duration-300"
