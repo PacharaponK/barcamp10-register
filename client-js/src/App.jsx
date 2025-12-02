@@ -89,29 +89,35 @@ function App() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   // Enable smooth scrolling and active section detection
+  // Enable smooth scrolling and active section detection using IntersectionObserver
   useEffect(() => {
     document.documentElement.style.scrollBehavior = "smooth";
 
-    const handleScroll = () => {
-      const sections = ["home", "about", "timeline", "gallery"];
-      const scrollPosition = window.scrollY + 200; // Offset for navbar
-
-      for (const section of sections) {
-        const element = document.getElementById(section);
-        if (element) {
-          const offsetTop = element.offsetTop;
-          const offsetHeight = element.offsetHeight;
-          if (scrollPosition >= offsetTop && scrollPosition < offsetTop + offsetHeight) {
-            setActiveSection(section);
-          }
-        }
-      }
+    const observerOptions = {
+      root: null,
+      rootMargin: "-50% 0px -50% 0px", // Trigger when section is in the middle of viewport
+      threshold: 0
     };
 
-    window.addEventListener("scroll", handleScroll);
+    const observerCallback = (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          setActiveSection(entry.target.id);
+        }
+      });
+    };
+
+    const observer = new IntersectionObserver(observerCallback, observerOptions);
+    const sections = ["home", "about", "timeline", "gallery"];
+
+    sections.forEach(section => {
+      const element = document.getElementById(section);
+      if (element) observer.observe(element);
+    });
+
     return () => {
       document.documentElement.style.scrollBehavior = "auto";
-      window.removeEventListener("scroll", handleScroll);
+      observer.disconnect();
     };
   }, []);
 
@@ -193,7 +199,7 @@ function App() {
     },
     {
       id: 2,
-      date: "January 26th, 2008",
+      date: "Jan 26th, 2008",
       title: "Barcamp in Thailand",
       description: "บาร์แคมป์ได้จัดขึ้นครั้งแรกเมื่อวันที่ 26 มกราคม พ.ศ. 2551 ที่กรุงเทพมหานคร จากนั้นได้มีผู้สนใจจัดงานตามจังหวัดต่างๆ ได้แก่ เชียงใหม่ สงขลา และ ภูเก็ต",
     },
@@ -237,7 +243,7 @@ function App() {
           </a>
 
           {/* Desktop Menu */}
-          <ul className="hidden md:flex space-x-8 text-white">
+          <ul className="hidden lg:flex space-x-8 text-white">
             {navItems.map((item) => {
               const Icon = item.icon;
               const isActive = activeSection === item.id;
@@ -264,7 +270,7 @@ function App() {
           </ul>
 
           {/* Mobile Menu Button */}
-          <div className="md:hidden text-white z-50 relative">
+          <div className="lg:hidden text-white z-50 relative">
             <button
               onClick={() => setIsMobileMenuOpen(true)}
               className="p-2 focus:outline-none"
@@ -330,19 +336,19 @@ function App() {
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 2 }}
-            className="absolute top-20 right-10 md:top-10 md:right-32 z-0"
+            className="absolute top-20 right-10 lg:top-10 lg:right-32 z-0 "
             id="home"
           >
-            <div className="relative w-48 h-48 md:w-96 md:h-96 bg-slate-100 rounded-full shadow-glow-lg md:shadow-glow-xl overflow-hidden">
+            <div className="relative w-48 h-48 lg:w-96 lg:h-96 bg-yellow-100 rounded-full shadow-glow-lg lg:shadow-glow-xl overflow-hidden ">
               <div className="absolute w-full h-full bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-20"></div>
               {/* Craters */}
-              <div className="absolute top-10 left-10 w-12 h-12 md:w-20 md:h-20 bg-slate-300 rounded-full opacity-30 blur-xl"></div>
-              <div className="absolute bottom-20 right-20 w-20 h-20 md:w-32 md:h-32 bg-slate-300 rounded-full opacity-30 blur-xl"></div>
+              <div className="absolute top-10 left-10 w-12 h-12 lg:w-20 lg:h-20 bg-yellow-300 rounded-full opacity-30 blur-xl"></div>
+              <div className="absolute bottom-20 right-20 w-20 h-20 lg:w-32 lg:h-32 bg-yellow-300 rounded-full opacity-30 blur-xl"></div>
             </div>
           </motion.div>
 
           {/* Stars */}
-          {[...Array(30)].map((_, i) => (
+          {[...Array(15)].map((_, i) => (
             <motion.div
               key={`home-star-${i}`}
               className="absolute text-white/80"
@@ -361,17 +367,17 @@ function App() {
           <motion.div
             variants={cloudFloat}
             animate="animate"
-            className="absolute top-32 left-4 md:left-10 opacity-60 z-0 text-slate-300"
+            className="absolute top-32 left-4 lg:left-10 opacity-60 z-0 text-slate-300"
           >
-            <Cloud size={100} md: size={180} strokeWidth={1} fill="currentColor" fillOpacity={0.3} />
+            <Cloud size={100} lg: size={180} strokeWidth={1} fill="currentColor" fillOpacity={0.3} />
           </motion.div>
           <motion.div
             variants={cloudFloat}
             animate="animate"
-            className="absolute top-60 right-4 md:right-1/4 opacity-40 z-0 text-slate-400"
+            className="absolute top-60 right-4 lg:right-1/4 opacity-40 z-0 text-slate-400"
             style={{ x: -50 }}
           >
-            <Cloud size={80} md: size={120} strokeWidth={1.5} fill="currentColor" fillOpacity={0.2} />
+            <Cloud size={80} lg: size={120} strokeWidth={1.5} fill="currentColor" fillOpacity={0.2} />
           </motion.div>
 
 
@@ -429,7 +435,7 @@ function App() {
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.8, delay: 0.3 }}
                 whileHover={{ scale: 1.05 }}
-                className="relative text-5xl min-[400px]:text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-extrabold mb-0 flex flex-wrap justify-center gap-x-3 gap-y-0 md:gap-4"
+                className="relative text-5xl md:text-8xl xl:text-9xl font-extrabold mb-0 flex flex-wrap justify-center gap-x-3 gap-y-0 lg:gap-4"
               >
                 {/* Animated gradient text with letter animation */}
                 <span className="relative inline-block">
@@ -439,7 +445,7 @@ function App() {
                       initial={{ opacity: 0, y: 50 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.5, delay: 0.5 + i * 0.1 }}
-                      className="inline-block text-cyan-400 "
+                      className="inline-block text-cyan-400"
                       // style={{
                       //   textShadow: "0 0 30px rgba(6, 182, 212, 1), 0 0 60px rgba(6, 182, 212, 0.6), 0 0 90px rgba(6, 182, 212, 0.3)",
                       // }}
@@ -467,9 +473,18 @@ function App() {
               </motion.h1>
             </div>
 
-            <p className="text-xl md:text-3xl mb-10 text-cyan-500 sm:text-cyan-100  font-light tracking-[0.2em] uppercase drop-shadow-text-sm md:drop-shadow-md flex items-center justify-center gap-3">
+            <p className="italic text-xl lg:text-3xl mb-6 text-cyan-400 md:text-cyan-200 font-light tracking-[0.2em] uppercase drop-shadow-text-sm lg:drop-shadow-md flex items-center justify-center gap-3">
               <Typewriter backspace="slow">Songkhla Night Sea</Typewriter>
             </p>
+
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 1.5 }}
+              className=" text-cyan-200 text-sm lg:text-base max-w-xl mx-auto font-light leading-relaxed mb-10"
+            >
+              Barcamp Songkhla คืองานสัมมนาแบบ Unconference ที่เปิดโอกาสให้ทุกคนได้มาแบ่งปันความรู้ ประสบการณ์ และเรื่องที่สนใจ ในบรรยากาศที่เป็นกันเอง
+            </motion.p>
 
             {/* <Link to="/register">
               <motion.button
@@ -487,11 +502,11 @@ function App() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 1, duration: 1 }}
-              className="md:hidden mt-12 flex flex-col items-center gap-8 px-4"
+              className="lg:hidden mt-8 flex flex-col items-center gap-8 px-4"
             >
               <div className="flex flex-col group items-center gap-2 text-center">
-                <div className="p-3 bg-white/5 rounded-full border border-white/10 group-hover:border-cyan-400/50 group-hover:bg-cyan-500/10 transition-all duration-300">
-                  <Calendar className="text-cyan-300" size={24} />
+                <div className="p-3 bg-white/5 rounded-full border border-white/10 group-hover:border-cyan-400/50 group-hover:bg-cyan-500/10 transition-all duration-300 ">
+                  <Calendar className="text-cyan-200" size={24} />
                 </div>
                 <div>
                   <span className="text-cyan-100/60 font-bold tracking-widest uppercase block mb-1">Date</span>
@@ -500,7 +515,7 @@ function App() {
               </div>
               <div className="flex flex-col group items-center gap-2 text-center">
                 <a href='https://maps.app.goo.gl/oS6xJSj86hAsZTpx5' className="p-3 bg-white/5 rounded-full border border-white/10 group-hover:border-cyan-400/50 group-hover:bg-cyan-500/10 transition-all duration-300">
-                  <MapPin className="text-cyan-300" size={24} />
+                  <MapPin className="text-white" size={24} />
                 </a>
                 <div>
                   <span className="text-cyan-100/60 text-[10px] font-bold tracking-widest uppercase block mb-1">Location</span>
@@ -513,7 +528,7 @@ function App() {
           </motion.div>
 
           {/* Mobile: Follow Us (Top Right) */}
-          <div className="md:hidden absolute top-5 right-4 z-20 flex gap-3">
+          <div className="lg:hidden absolute top-5 right-4 z-20 flex gap-3">
             <a href="https://facebook.com/BarcampSongkhla" target="_blank" rel="noopener noreferrer" className="p-2 bg-white/10 backdrop-blur-md rounded-full border border-white/20 text-white hover:bg-blue-600/30 transition-all">
               <Facebook size={18} />
             </a>
@@ -527,12 +542,12 @@ function App() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 1.2, duration: 0.8 }}
-            className="hidden md:flex  pt-8 z-20 justify-between items-start px-8 max-w-5xl mx-auto w-full"
+            className="hidden lg:flex pt-8 z-20 justify-between items-start px-8 max-w-5xl mx-auto w-full"
           >
             {/* Date */}
             <div className="flex items-center gap-3 group cursor-default">
               <div className="p-3 bg-white/5 self-start rounded-full border border-white/10 group-hover:border-cyan-400/50 group-hover:bg-cyan-500/10 transition-all duration-300">
-                <Calendar className="text-cyan-300 group-hover:text-cyan-200" size={20} />
+                <Calendar className="text-white group-hover:text-cyan-200" size={20} />
               </div>
               <div className="text-left">
                 <span className="text-cyan-100/60 text-[10px] font-bold tracking-[0.2em] uppercase block mb-1">Date</span>
@@ -543,7 +558,7 @@ function App() {
             {/* Location */}
             <div className="flex items-center gap-3 group cursor-default">
               <a href='https://maps.app.goo.gl/oS6xJSj86hAsZTpx5' className="p-3 self-start bg-white/5 rounded-full border border-white/10 group-hover:border-cyan-400/50 group-hover:bg-cyan-500/10 transition-all duration-300">
-                <MapPin className="text-cyan-300 group-hover:text-cyan-200" size={20} />
+                <MapPin className="text-white group-hover:text-cyan-200" size={20} />
               </a>
               <div className="text-left">
                 <span className="text-cyan-100/60 text-[10px] font-bold tracking-[0.2em] uppercase block mb-1">Location</span>
@@ -570,9 +585,9 @@ function App() {
 
         {/* SPONSOR SECTION */}
 
-        <section id="sponsors" className="relative pt-24 pb-10 md:pb-24 bg-gradient-sponsors overflow-hidden">
+        <section id="sponsors" className="relative pb-10 md:pb-24 bg-gradient-sponsors overflow-hidden">
 
-          {[...Array(20)].map((_, i) => (
+          {[...Array(10)].map((_, i) => (
             <motion.div
               key={`sponsor-star-${i}`}
               className="absolute text-yellow-100/60"
@@ -587,7 +602,7 @@ function App() {
             </motion.div>
           ))}
 
-          {[...Array(15)].map((_, i) => (
+          {[...Array(8)].map((_, i) => (
             <motion.div
               key={`sponsor-particle-${i}`}
               className="absolute bg-cyan-400/20 rounded-full blur-sm"
@@ -667,7 +682,7 @@ function App() {
         {/* ABOUT SECTION */}
         <section id="about" className="relative min-h-[800px] flex flex-col items-center py-24 pb-32 overflow-hidden bg-gradient-about">
           {/* Stars */}
-          {[...Array(30)].map((_, i) => (
+          {[...Array(15)].map((_, i) => (
             <motion.div
               key={i}
               className="absolute text-yellow-100"
@@ -883,7 +898,7 @@ function App() {
           </h1>
 
           {/* Bubbles - Simplified */}
-          {[...Array(20)].map((_, i) => (
+          {[...Array(10)].map((_, i) => (
             <motion.div
               key={`bubble-${i}`}
               variants={bubbleRise}
