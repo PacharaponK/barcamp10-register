@@ -10,11 +10,15 @@ import { randFloat } from "three/src/math/MathUtils.js";
 import { Water } from "three/examples/jsm/objects/Water.js";
 import Net from "../components/FogBackground";
 
+import useDocumentTitle from "../hooks/useDocumentTitle";
+
 function RegisterHomePage() {
 	const { user = {}, Console } = useLoaderData();
 	const [countDownText, setCountDownText] = useState("Loading...");
 	const [startRegister, setStartRegister] = useState(true);
 	const navigate = useNavigate();
+
+	useDocumentTitle("Barcamp 10 - Register");
 
 	useEffect(() => {
 		if (user.infomation && user.user) {
