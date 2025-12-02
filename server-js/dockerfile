@@ -1,16 +1,24 @@
-# Dockerfile (Updated)
-FROM node:18-alpine 
-# แนะนำขยับเป็น node 18 หรือ 20 (LTS) ถ้าเป็นไปได้ แต่ถ้าโค้ดเก่าใช้ 16 ก็ใช้ 16 ได้ครับ
+# Dockerfile for Node.js Backend Server
 
+# Use Node.js 18 Alpine as base image (lightweight Linux distro)
+# Recommended: Use Node 18 or 20 (LTS). Use Node 16 if legacy code requires it.
+FROM node:18-alpine 
+
+# Set working directory inside the container
 WORKDIR /app
 
+# Copy package.json and package-lock.json first (for better Docker layer caching)
 COPY package*.json ./
-RUN npm install --production 
-# เติม --production เพื่อไม่ให้ลง devDependencies (ช่วยลดขนาด image)
 
-# ลบบรรทัด COPY .env ออก
+# Install production dependencies only (skip devDependencies to reduce image size)
+RUN npm install --production 
+
+# Copy source code into the container
+# Note: .env file should NOT be copied - use environment variables at runtime
 COPY ./src ./src
 
+# Expose port 8080 for the application
 EXPOSE 8080
 
+# Start the Node.js server
 CMD ["node", "src/index.js"]
