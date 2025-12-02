@@ -4,14 +4,14 @@ services:
     api:
         build: .
         container_name: backend-api
-        restart: unless-stopped # ถ้า server ดับ หรือ container พัง มันจะเปิดตัวเองใหม่
+        # Auto-restart on crash or server reboot (won't restart if manually stopped)
+        restart: unless-stopped
         ports:
-            - "5000:8080" # Map Port 5000 ของเครื่อง Host เข้าหา 8080 ของ Container
+            # Host:Container - Access API at localhost:5000
+            - "5000:8080"
+        # Load environment variables from .env file
         env_file:
-            - .env # อ่านค่า config จากไฟล์ .env ที่วางอยู่ข้างๆ ไฟล์ compose
+            - .env
         volumes:
-            # ใช้ Bind Mount เพื่อให้ไฟล์ที่ User อัปโหลด เซฟลงมาที่เครื่อง Host โดยตรง
-            # เวลามีปัญหา หรืออยาก Backup จะได้หาง่ายๆ
+            # Bind mount for user uploads - persists data on host for easy backup
             - ./uploads:/app/uploads
-
-# ไม่ต้องประกาศ volumes: ด้านล่างแล้ว เพราะเราใช้ Bind mount (./uploads)

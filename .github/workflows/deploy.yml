@@ -2,10 +2,10 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches: ["main"] # ทำงานเมื่อ push เข้า main
+    branches: ["main"] # Trigger on push to main branch
 
 jobs:
-  # 1. งาน Build และ Push Frontend
+  # 1. Build and Push Frontend
   build-frontend:
     runs-on: ubuntu-latest
     steps:
@@ -21,11 +21,11 @@ jobs:
       - name: Build and Push Frontend
         uses: docker/build-push-action@v4
         with:
-          context: ./client-js # ระบุโฟลเดอร์ที่เก็บ frontend (ถ้าอยู่ที่ root ใส่ . )
+          context: ./client-js # Frontend directory (use . if at root)
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/barcamp10-client:latest
 
-  # 2. งาน Build และ Push Backend
+  # 2. Build and Push Backend
   build-backend:
     runs-on: ubuntu-latest
     steps:
@@ -41,11 +41,11 @@ jobs:
       - name: Build and Push Backend
         uses: docker/build-push-action@v4
         with:
-          context: ./server-js # ระบุโฟลเดอร์ที่เก็บ backend
+          context: ./server-js # Backend directory
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/barcamp10-server:latest
 
-  # 3. งาน Deploy ไปยัง EC2 (ทำหลังจาก 2 งานบนเสร็จแล้ว)
+  # 3. Deploy to EC2 (runs after both build jobs complete)
   deploy:
     needs: [build-frontend, build-backend]
     runs-on: ubuntu-latest
@@ -57,15 +57,39 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           port: 22
+          script_stop: true # Stop immediately if any command fails
           script: |
-            # เข้าไปที่โฟลเดอร์โปรเจกต์
-            cd /home/ubuntu/deploy 
+            set -e # Exit on any command failure
 
-            # ดึง Image ล่าสุดจาก Docker Hub
-            docker compose pull
+            echo "📁 Navigating to project directory..."
+            cd /home/ubuntu/deploy || { echo "❌ Directory /home/ubuntu/deploy not found"; exit 1; }
 
-            # รัน container ใหม่ (มันจะฉลาดพอที่จะ recreate เฉพาะตัวที่เปลี่ยน)
-            docker compose up -d
+            echo "🔄 Pulling latest images from Docker Hub..."
+            docker compose pull || { echo "❌ Failed to pull images"; exit 1; }
 
-            # ลบ Image เก่าๆ ที่ไม่ได้ใช้แล้วเพื่อให้ไม่เปลืองที่
+            echo "🚀 Starting containers..."
+            docker compose up -d || { echo "❌ Docker compose up failed"; exit 1; }
+
+            echo "⏳ Waiting 10 seconds for containers to start..."
+            sleep 10
+
+            echo "🔍 Checking container status..."
+            docker compose ps
+
+            # Verify all containers are running
+            RUNNING_CONTAINERS=$(docker compose ps --status running -q | wc -l)
+            TOTAL_CONTAINERS=$(docker compose ps -q | wc -l)
+
+            if [ "$RUNNING_CONTAINERS" -ne "$TOTAL_CONTAINERS" ]; then
+              echo "❌ Some containers are not running!"
+              echo "📋 Logs from problematic containers:"
+              docker compose logs --tail=50
+              exit 1
+            fi
+
+            echo "✅ All containers running ($RUNNING_CONTAINERS/$TOTAL_CONTAINERS)"
+
+            echo "🧹 Cleaning up unused images..."
             docker image prune -f
+
+            echo "✅ Deployment successful!"
