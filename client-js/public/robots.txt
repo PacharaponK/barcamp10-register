@@ -1,0 +1,12 @@
+# Robots.txt for Barcamp Songkhla
+# https://barcampsongkhla.org
+
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://barcampsongkhla.org/sitemap.xml
+
+# Disallow admin and API routes
+Disallow: /api/
+Disallow: /admin/
