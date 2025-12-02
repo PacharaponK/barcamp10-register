@@ -1,19 +1,16 @@
-# Use Node.js image
-FROM node:16-alpine
+# Dockerfile (Updated)
+FROM node:18-alpine 
+# แนะนำขยับเป็น node 18 หรือ 20 (LTS) ถ้าเป็นไปได้ แต่ถ้าโค้ดเก่าใช้ 16 ก็ใช้ 16 ได้ครับ
 
-# Set the working directory
 WORKDIR /app
 
-# Copy package.json and install dependencies
 COPY package*.json ./
-RUN npm install
+RUN npm install --production 
+# เติม --production เพื่อไม่ให้ลง devDependencies (ช่วยลดขนาด image)
 
-# Copy the source code and the .env file
-COPY ./src /app/src
-COPY .env /app/.env
+# ลบบรรทัด COPY .env ออก
+COPY ./src ./src
 
-# Expose the application's port
 EXPOSE 8080
 
-# Start the Node.js server, pointing to the correct file (src/index.js)
 CMD ["node", "src/index.js"]

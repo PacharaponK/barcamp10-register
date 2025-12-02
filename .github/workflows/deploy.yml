@@ -1,0 +1,71 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: ["main"] # ทำงานเมื่อ push เข้า main
+
+jobs:
+  # 1. งาน Build และ Push Frontend
+  build-frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and Push Frontend
+        uses: docker/build-push-action@v4
+        with:
+          context: ./client-js # ระบุโฟลเดอร์ที่เก็บ frontend (ถ้าอยู่ที่ root ใส่ . )
+          push: true
+          tags: ${{ secrets.DOCKER_USERNAME }}/barcamp10-client:latest
+
+  # 2. งาน Build และ Push Backend
+  build-backend:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and Push Backend
+        uses: docker/build-push-action@v4
+        with:
+          context: ./server-js # ระบุโฟลเดอร์ที่เก็บ backend
+          push: true
+          tags: ${{ secrets.DOCKER_USERNAME }}/barcamp10-server:latest
+
+  # 3. งาน Deploy ไปยัง EC2 (ทำหลังจาก 2 งานบนเสร็จแล้ว)
+  deploy:
+    needs: [build-frontend, build-backend]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to EC2 via SSH
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          port: 22
+          script: |
+            # เข้าไปที่โฟลเดอร์โปรเจกต์
+            cd /home/ubuntu/deploy 
+
+            # ดึง Image ล่าสุดจาก Docker Hub
+            sudo docker compose pull
+
+            # รัน container ใหม่ (มันจะฉลาดพอที่จะ recreate เฉพาะตัวที่เปลี่ยน)
+            sudo docker compose up -d
+
+            # ลบ Image เก่าๆ ที่ไม่ได้ใช้แล้วเพื่อให้ไม่เปลืองที่
+            sudo docker image prune -f
