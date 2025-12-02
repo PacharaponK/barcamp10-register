@@ -292,17 +292,17 @@ function App() {
         {/* HOME SECTION: Moon & Clouds & Stars */}
         <section
           id="home"
-          className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden pt-20"
+          className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden py-40"
         >
           {/* Giant Moon */}
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 2 }}
-            className="absolute top-20 right-10 lg:top-10 lg:right-32 z-0 "
+            className="absolute  left-10 md:right-10  top-10 lg:right-32 z-0 "
             id="home"
           >
-            <div className="relative w-48 h-48 lg:w-96 lg:h-96 bg-white rounded-full shadow-glow-lg lg:shadow-glow-xl overflow-hidden ">
+            <div className="relative  w-24 h-24 md:w-56 md:h-56  lg:w-96 lg:h-96 bg-white rounded-full shadow-glow-lg lg:shadow-glow-xl overflow-hidden ">
               <div className="absolute w-full h-full bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-20"></div>
               {/* Craters */}
               <div className="absolute top-10 left-10 w-12 h-12 lg:w-20 lg:h-20 bg-yellow-100 rounded-full opacity-30 blur-xl"></div>
@@ -400,7 +400,7 @@ function App() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 1.5 }}
-              className=" text-cyan-200 text-sm lg:text-base max-w-xl mx-auto font-light leading-relaxed mb-10"
+              className="text-sm lg:text-base max-w-xl mx-auto font-light leading-relaxed mb-10"
             >
               Barcamp Songkhla คืองานสัมมนา ที่เปิดโอกาสให้ทุกคนได้มาแบ่งปันความรู้ ประสบการณ์ และเรื่องที่สนใจ ในบรรยากาศที่เป็นกันเอง
             </motion.p>
