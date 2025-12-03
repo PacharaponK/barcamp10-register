@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
 import { Star, Home, Cloud, Fish } from "lucide-react";
 import { useEffect } from "react";
+import Navbar from "../components/Navbar";
 
 const NotFoundPage = () => {
   const navigate = useNavigate();
@@ -40,7 +41,6 @@ const NotFoundPage = () => {
 
   return (
     <div className="bg-gradient-main min-h-screen font-sans text-white overflow-hidden flex flex-col items-center justify-center relative">
-
       {/* Background Stars */}
       {[...Array(20)].map((_, i) => (
         <motion.div
